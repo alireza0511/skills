@@ -1,0 +1,38 @@
+{
+  "name": "bank-copilot-skills",
+  "version": "0.1.0",
+  "description": "Enterprise GitHub Copilot skills and agents for National Bank development standards",
+  "core_skills": [
+    "security",
+    "accessibility",
+    "testing",
+    "architecture",
+    "api-design",
+    "observability",
+    "cicd",
+    "code-review",
+    "internationalization",
+    "license-compliance",
+    "documentation",
+    "project-scaffolding",
+    "error-handling",
+    "data-privacy",
+    "skill-development"
+  ],
+  "stacks": [
+    "java",
+    "flutter",
+    "react"
+  ],
+  "agents": [
+    "security-reviewer",
+    "architecture-reviewer",
+    "compliance-checker",
+    "onboarding-guide"
+  ],
+  "distribution": {
+    "registry": "jfrog-artifactory",
+    "repository": "bank-copilot-skills",
+    "type": "generic"
+  }
+}

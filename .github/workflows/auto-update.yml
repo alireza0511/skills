@@ -1,0 +1,89 @@
+name: Weekly Update Checker
+
+on:
+  schedule:
+    # Every Monday at 9:00 AM UTC
+    - cron: "0 9 * * 1"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  check-updates:
+    name: Check for Skill Updates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup JFrog CLI
+        uses: jfrog/setup-jfrog-cli@v4
+        env:
+          JF_URL: ${{ secrets.JFROG_URL }}
+          JF_ACCESS_TOKEN: ${{ secrets.JFROG_ACCESS_TOKEN }}
+
+      - name: Get latest version from Artifactory
+        id: latest
+        run: |
+          LATEST=$(jf rt search "bank-copilot-skills/bank-copilot-skills/*/bank-copilot-skills-*.tar.gz" \
+            --sort-by=created --sort-order=desc --limit=1 | jq -r '.[0].path' | grep -oP '\d+\.\d+\.\d+')
+
+          if [ -z "$LATEST" ]; then
+            echo "::warning::Could not determine latest version from Artifactory"
+            exit 0
+          fi
+
+          echo "latest_version=$LATEST" >> "$GITHUB_OUTPUT"
+          echo "Latest version in Artifactory: $LATEST"
+
+      - name: Check consuming repos and open PRs
+        if: steps.latest.outputs.latest_version != ''
+        env:
+          GH_TOKEN: ${{ secrets.UPDATE_CHECKER_PAT }}
+          LATEST_VERSION: ${{ steps.latest.outputs.latest_version }}
+        run: |
+          # List of repos that consume the skills package
+          REPOS=$(jq -r '.distribution.consuming_repos // [] | .[]' manifest.json 2>/dev/null || true)
+
+          if [ -z "$REPOS" ]; then
+            echo "No consuming repos configured in manifest.json — checking org repos with topic 'copilot-skills'."
+            REPOS=$(gh api "/orgs/${{ github.repository_owner }}/repos" --jq '.[] | select(.topics | index("copilot-skills")) | .full_name' 2>/dev/null || true)
+          fi
+
+          if [ -z "$REPOS" ]; then
+            echo "No consuming repos found. Nothing to update."
+            exit 0
+          fi
+
+          for REPO in $REPOS; do
+            echo "Checking $REPO..."
+
+            # Get the repo's current skills version from their manifest or config
+            REPO_VERSION=$(gh api "repos/${REPO}/contents/manifest.json" --jq '.content' 2>/dev/null \
+              | base64 -d 2>/dev/null \
+              | jq -r '.skills_version // .version // empty' 2>/dev/null || true)
+
+            if [ -z "$REPO_VERSION" ]; then
+              echo "  Could not determine version for $REPO — skipping."
+              continue
+            fi
+
+            if [ "$REPO_VERSION" = "$LATEST_VERSION" ]; then
+              echo "  $REPO is up to date (${REPO_VERSION})."
+              continue
+            fi
+
+            echo "  $REPO is behind (${REPO_VERSION} vs ${LATEST_VERSION}). Opening PR..."
+
+            # Check if update PR already exists
+            EXISTING_PR=$(gh pr list --repo "$REPO" --head "auto-update/copilot-skills-${LATEST_VERSION}" --json number --jq '.[0].number' 2>/dev/null || true)
+
+            if [ -n "$EXISTING_PR" ]; then
+              echo "  PR #${EXISTING_PR} already exists for $REPO — skipping."
+              continue
+            fi
+
+            echo "  Would open PR to update $REPO from ${REPO_VERSION} to ${LATEST_VERSION}."
+            echo "  (Actual PR creation requires write access and branch push to target repo.)"
+          done

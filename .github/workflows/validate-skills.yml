@@ -1,0 +1,131 @@
+name: Validate Copilot Skills (PR)
+
+on:
+  pull_request:
+    paths:
+      - "core/**"
+      - "stacks/**"
+      - "agents/**"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  frontmatter-validation:
+    name: Frontmatter Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate YAML frontmatter
+        run: ./scripts/validate-frontmatter.sh
+
+  line-budget:
+    name: Line Budget Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check line budgets
+        run: ./scripts/check-line-budget.sh
+
+  structure-check:
+    name: Structure Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify required sections
+        run: ./scripts/check-structure.sh
+
+  reference-check:
+    name: Reference File Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify reference.md exists in every skill directory
+        run: |
+          EXIT_CODE=0
+          for dir in core/*/  stacks/*/  agents/*/; do
+            [ -d "$dir" ] || continue
+            if [ ! -f "${dir}reference.md" ]; then
+              echo "::error::Missing reference.md in ${dir}"
+              EXIT_CODE=1
+            fi
+          done
+          if [ "$EXIT_CODE" -eq 0 ]; then
+            echo "All skill directories contain reference.md"
+          fi
+          exit "$EXIT_CODE"
+
+  codeblock-check:
+    name: Code Block Size Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check code block sizes
+        run: ./scripts/check-codeblock-size.sh
+
+  markdown-lint:
+    name: Markdown Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get changed files
+        id: changed
+        run: |
+          FILES=$(gh pr diff "${{ github.event.pull_request.number }}" --name-only | grep '\.md$' || true)
+          echo "files<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$FILES" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run markdownlint on changed files
+        if: steps.changed.outputs.files != ''
+        run: |
+          echo "${{ steps.changed.outputs.files }}" | xargs npx markdownlint-cli2
+
+  secrets-scan:
+    name: Secrets Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Scan for common secret patterns
+        run: |
+          EXIT_CODE=0
+          PATTERNS=(
+            'AKIA[0-9A-Z]{16}'                          # AWS Access Key
+            '(?i)(api[_-]?key|apikey)\s*[:=]\s*["\x27]?[A-Za-z0-9_\-]{16,}'  # API keys
+            '(?i)(password|passwd|pwd)\s*[:=]\s*["\x27]?[^\s"'\'']{8,}'       # Passwords
+            '(?i)(secret|token)\s*[:=]\s*["\x27]?[A-Za-z0-9_\-]{16,}'        # Secrets/tokens
+            '-----BEGIN (RSA |EC |DSA )?PRIVATE KEY-----'                      # Private keys
+            'ghp_[A-Za-z0-9]{36}'                        # GitHub PAT
+            'xox[bprs]-[A-Za-z0-9\-]+'                   # Slack tokens
+          )
+
+          for pattern in "${PATTERNS[@]}"; do
+            MATCHES=$(grep -rPn "$pattern" core/ stacks/ agents/ 2>/dev/null || true)
+            if [ -n "$MATCHES" ]; then
+              echo "::error::Potential secret found matching pattern: $pattern"
+              echo "$MATCHES"
+              EXIT_CODE=1
+            fi
+          done
+
+          if [ "$EXIT_CODE" -eq 0 ]; then
+            echo "No secret patterns detected."
+          fi
+          exit "$EXIT_CODE"

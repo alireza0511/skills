@@ -1,0 +1,58 @@
+name: Publish to Artifactory
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Build and Publish Package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract version from manifest.json
+        id: version
+        run: |
+          VERSION=$(jq -r '.version' manifest.json)
+          if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
+            echo "::error::Could not read version from manifest.json"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Detected version: $VERSION"
+
+      - name: Build package
+        id: build
+        run: |
+          ARCHIVE_PATH=$(./scripts/build-package.sh)
+          echo "archive_path=$ARCHIVE_PATH" >> "$GITHUB_OUTPUT"
+
+      - name: Setup JFrog CLI
+        uses: jfrog/setup-jfrog-cli@v4
+        env:
+          JF_URL: ${{ secrets.JFROG_URL }}
+          JF_ACCESS_TOKEN: ${{ secrets.JFROG_ACCESS_TOKEN }}
+
+      - name: Upload to Artifactory
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          ARCHIVE="bank-copilot-skills-${VERSION}.tar.gz"
+          CHECKSUM="bank-copilot-skills-${VERSION}.tar.gz.sha256"
+
+          jf rt upload \
+            "$ARCHIVE" \
+            "bank-copilot-skills/bank-copilot-skills/${VERSION}/${ARCHIVE}" \
+            --flat
+
+          jf rt upload \
+            "$CHECKSUM" \
+            "bank-copilot-skills/bank-copilot-skills/${VERSION}/${CHECKSUM}" \
+            --flat
+
+          echo "Published ${ARCHIVE} to Artifactory (version ${VERSION})"
