@@ -2,7 +2,7 @@
 
 React and Next.js accessibility patterns for the bank's web applications. See `core/accessibility/SKILL.md` for core rules.
 
-## Core Principle — Semantic HTML First
+## Core Principle
 
 **Use native HTML elements before reaching for ARIA.** Native elements (`<button>`, `<input>`, `<select>`, `<a>`, `<table>`) have built-in accessibility — keyboard behavior, screen reader roles, and focus management. ARIA is a fallback when no native element fits.
 
@@ -20,7 +20,7 @@ React and Next.js accessibility patterns for the bank's web applications. See `c
 </button>
 ```
 
-## Hard Rules — React-Specific
+## Hard Rules
 
 ### Never use `dangerouslySetInnerHTML` without sanitization
 
@@ -80,7 +80,56 @@ React and Next.js accessibility patterns for the bank's web applications. See `c
 <input aria-label="Search accounts" type="search" />
 ```
 
-## ARIA Patterns for Banking Components
+## Anti-Patterns
+
+Common React accessibility anti-patterns to avoid:
+
+### Using `<a>` without `href` for clickable elements
+
+```tsx
+// WRONG — anchor without href, missing keyboard support
+<a onClick={handleClick}>View Account</a>
+
+// CORRECT — use button for actions, anchor for navigation
+<button onClick={handleClick}>View Account</button>
+<a href="/account/123">View Account</a>
+```
+
+### Using `aria-label` when visible text already serves as label
+
+```tsx
+// WRONG — redundant aria-label duplicating visible text
+<button aria-label="Submit Payment">Submit Payment</button>
+
+// CORRECT — visible text is the accessible name
+<button>Submit Payment</button>
+```
+
+### Wrapping everything in `<div>` instead of semantic elements
+
+```tsx
+// WRONG — div soup
+<div class="header"><div class="nav">...</div></div>
+
+// CORRECT — semantic elements
+<header><nav aria-label="Primary">...</nav></header>
+```
+
+### Using `outline: none` on focus styles
+
+```css
+/* WRONG — removes focus visibility */
+button:focus { outline: none; }
+
+/* CORRECT — custom focus style */
+button:focus-visible { outline: 2px solid #005fcc; outline-offset: 2px; }
+```
+
+### Using `tabIndex` values greater than 0
+
+A positive `tabIndex` overrides the natural DOM order and creates unpredictable navigation. Always use `tabIndex={0}` (adds to natural order) or `tabIndex={-1}` (programmatically focusable only).
+
+## ARIA Patterns
 
 ### Live Regions
 
@@ -164,7 +213,7 @@ Requirements:
 }
 ```
 
-## Keyboard Navigation — React
+## Keyboard Navigation
 
 ### Focus Management
 
@@ -219,7 +268,44 @@ function handleKeyDown(e: React.KeyboardEvent) {
 }
 ```
 
-## Accessible Forms — React
+## Touch Targets
+
+Ensure all interactive elements meet the minimum 44x44px touch/click target size (WCAG 2.5.5 Target Size).
+
+```css
+/* Minimum touch/click target */
+.interactive-element {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* For inline links/buttons that can't be 44px, add padding */
+.compact-action {
+  padding: 8px;
+  /* Ensure total tap area meets 44px */
+}
+```
+
+## Semantic Label Patterns
+
+React-specific labeling conventions for banking UI components.
+
+```tsx
+// Buttons — describe the action
+<button aria-label="Transfer $500 to Savings Account">Transfer</button>
+
+// Inputs — label describes what to enter
+<label htmlFor="amount">Transfer Amount (USD)</label>
+<input id="amount" />
+
+// Status — include full context
+<span aria-label="Transaction status: Completed">✓ Completed</span>
+
+// Icon-only buttons — always need aria-label
+<button aria-label="Delete transaction"><TrashIcon aria-hidden="true" /></button>
+```
+
+## Accessible Forms
 
 ### Error Handling Pattern
 
@@ -261,7 +347,7 @@ function handleKeyDown(e: React.KeyboardEvent) {
 </form>
 ```
 
-## Reduced Motion — React / CSS
+## Reduce Motion
 
 ```tsx
 // React hook
@@ -320,7 +406,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 </footer>
 ```
 
-## Testing — React
+## Testing
 
 ### Automated: jest-axe
 

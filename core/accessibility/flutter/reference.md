@@ -2,7 +2,7 @@
 
 Flutter-specific accessibility patterns for the bank's mobile applications. See `core/accessibility/SKILL.md` for core rules.
 
-## Core Principle — Prefer Built-in Semantics
+## Core Principle
 
 **Avoid wrapping widgets with custom `Semantics` unless absolutely necessary.** Flutter's built-in widgets already provide correct semantic roles, states, and announcements. Wrapping them overrides framework behavior, risks duplicates, and adds maintenance burden.
 
@@ -27,7 +27,7 @@ ExcludeSemantics(child: Divider())
 Semantics(liveRegion: true, child: Text(errorMessage))
 ```
 
-## Anti-Patterns — Redundant Semantics
+## Anti-Patterns
 
 Flag these during audit — wrapping built-in widgets with redundant `Semantics`:
 
@@ -58,7 +58,7 @@ Semantics(
 )
 ```
 
-## Hard Rules — Flutter-Specific
+## Hard Rules
 
 ### Never use GestureDetector for interactive elements
 
@@ -115,7 +115,7 @@ SizedBox(height: 48, child: Text('Clipped at 200%'))
 ConstrainedBox(constraints: BoxConstraints(minHeight: 48), child: Text('Grows'))
 ```
 
-## Accessibility Services — Flutter Mapping
+## Accessibility Services
 
 ### Screen Readers
 
@@ -181,25 +181,6 @@ MergeSemantics(
 )
 ```
 
-### Display Accommodations
-
-| Setting | Flutter API |
-|---------|------------|
-| Large text | `MediaQuery.textScaleFactor` — layouts must not clip |
-| Bold text | `MediaQuery.boldText` |
-| High contrast | `MediaQuery.highContrast` |
-| Reduce motion | `MediaQuery.disableAnimations` |
-| Reduce transparency | `MediaQuery.reduceTransparency` |
-
-```dart
-// Reduce motion
-final reduceMotion = MediaQuery.of(context).disableAnimations;
-final duration = reduceMotion ? Duration.zero : const Duration(milliseconds: 150);
-
-// High contrast
-final highContrast = MediaQuery.of(context).highContrast;
-```
-
 ## Touch Targets
 
 Minimum sizes:
@@ -249,7 +230,71 @@ Column(
 Semantics(sortKey: OrdinalSortKey(0), child: Text('Form Title'))
 ```
 
-## Testing — Flutter
+## Display Accommodations
+
+| Setting | Flutter API |
+|---------|------------|
+| Large text | `MediaQuery.textScaleFactor` — layouts must not clip |
+| Bold text | `MediaQuery.boldText` |
+| High contrast | `MediaQuery.highContrast` |
+| Reduce motion | `MediaQuery.disableAnimations` |
+| Reduce transparency | `MediaQuery.reduceTransparency` |
+
+```dart
+// Reduce motion
+final reduceMotion = MediaQuery.of(context).disableAnimations;
+final duration = reduceMotion ? Duration.zero : const Duration(milliseconds: 150);
+
+// High contrast
+final highContrast = MediaQuery.of(context).highContrast;
+```
+
+## Forms
+
+Accessible form patterns for banking workflows. Use Flutter's built-in form widgets — they provide correct semantic roles and validation announcements automatically.
+
+```dart
+// Accessible transfer form
+Form(
+  child: Column(
+    children: [
+      // Labeled input with error
+      TextFormField(
+        decoration: InputDecoration(
+          labelText: 'Amount',
+          errorText: amountError,
+          hintText: 'Enter amount in dollars',
+        ),
+        keyboardType: TextInputType.numberWithOptions(decimal: true),
+        validator: (value) => value == null || value.isEmpty
+            ? 'Amount is required' : null,
+      ),
+
+      // Error summary — announced via live region
+      if (errors.isNotEmpty)
+        Semantics(
+          liveRegion: true,
+          child: Text('${errors.length} errors found'),
+        ),
+
+      // Submit button
+      ElevatedButton(
+        onPressed: _review,
+        child: Text('Review Transfer'),
+      ),
+    ],
+  ),
+)
+```
+
+**Key rules for forms:**
+- Use `TextFormField` with `InputDecoration.labelText` — never rely on placeholder text alone
+- Use `errorText` for inline validation errors — screen readers announce these automatically
+- Use `Semantics(liveRegion: true)` for error summaries so they are announced immediately
+- Group related fields in a `Column` to maintain natural focus order
+- Provide `keyboardType` to show the appropriate keyboard for the input type
+
+## Testing
 
 ### Automated Widget Tests
 

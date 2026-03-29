@@ -2,7 +2,7 @@
 
 iOS accessibility patterns for the bank's native iOS applications. See `core/accessibility/SKILL.md` for core rules.
 
-## Core Principle — Use UIKit/SwiftUI Built-in Accessibility
+## Core Principle
 
 UIKit and SwiftUI controls have built-in accessibility traits, labels, and behaviors. Configure them before creating custom accessibility implementations.
 
@@ -16,7 +16,7 @@ Image("chart")
     .accessibilityLabel("Account balance trend: $4,200 in Jan to $5,100 in Mar")
 ```
 
-## Hard Rules — iOS-Specific
+## Hard Rules
 
 ### All images must have accessibilityLabel or be marked decorative
 
@@ -63,6 +63,57 @@ struct BalanceCard: View {
             .accessibilityLabel("Current balance: $5,100.00")
     }
 }
+```
+
+## Anti-Patterns
+
+Common iOS accessibility anti-patterns to avoid:
+
+- Using `.accessibilityHidden(true)` on content that conveys meaning
+- Setting fixed font sizes with `.font(.system(size:))` instead of text styles
+- Forgetting to set `accessibilityLabel` on Image views
+- Using custom gesture recognizers without VoiceOver alternatives
+- Not grouping related content with `.accessibilityElement(children: .combine)`
+
+```swift
+// WRONG — hides meaningful error indicator from VoiceOver
+Image(systemName: "exclamationmark.triangle")
+    .foregroundColor(.red)
+    .accessibilityHidden(true)
+
+// CORRECT — expose with proper label
+Image(systemName: "exclamationmark.triangle")
+    .foregroundColor(.red)
+    .accessibilityLabel("Warning")
+
+// WRONG — fixed size ignores Dynamic Type
+Text("Balance")
+    .font(.system(size: 16))
+
+// CORRECT — scales with Dynamic Type
+Text("Balance")
+    .font(.body)
+
+// WRONG — custom gesture with no VoiceOver alternative
+view.onLongPressGesture { showDetails() }
+
+// CORRECT — provide custom action for VoiceOver
+view.accessibilityAction(named: "Show Details") { showDetails() }
+    .onLongPressGesture { showDetails() }
+
+// WRONG — related content not grouped
+VStack {
+    Text("Savings")    // VoiceOver: "Savings"
+    Text("$5,100")     // VoiceOver: "$5,100" (separate focus)
+}
+
+// CORRECT — grouped for single focus
+VStack {
+    Text("Savings")
+    Text("$5,100")
+}
+.accessibilityElement(children: .combine)
+// VoiceOver: "Savings, $5,100"
 ```
 
 ## VoiceOver Patterns
@@ -138,6 +189,8 @@ func showErrorBanner() {
 
 ## Dynamic Type
 
+> **Note:** SKILL.md may reference this section as "Display Accommodations".
+
 ```swift
 // CORRECT — respects Dynamic Type automatically
 Text("Account Balance")
@@ -196,7 +249,48 @@ Button(action: action) {
 .frame(minWidth: 44, minHeight: 44) // Touch target
 ```
 
-## Forms — Accessible Pattern
+## Semantic Label Patterns
+
+iOS-specific labeling conventions for common UI elements:
+
+```swift
+// Buttons — describe the action
+Button("Transfer") { ... }
+    .accessibilityLabel("Transfer $500 to Savings Account")
+
+// Inputs — describe what to enter
+TextField("Amount", text: $amount)
+    .accessibilityLabel("Transfer amount in US dollars")
+
+// Status — include full context
+Image(systemName: "checkmark.circle.fill")
+    .accessibilityLabel("Transaction status: Completed")
+
+// Amounts — include currency
+Text("$5,100.00")
+    .accessibilityLabel("Balance: five thousand one hundred dollars")
+```
+
+## Focus & Navigation Order
+
+```swift
+// PREFERRED — natural view order matches reading order
+VStack {
+    Text("Transfer Funds").accessibilityAddTraits(.isHeader)
+    TextField("From Account", text: $from)
+    TextField("To Account", text: $to)
+    TextField("Amount", text: $amount)
+    Button("Review Transfer") { review() }
+}
+
+// Override reading order when layout doesn't match logical order
+HStack {
+    sidebar.accessibilitySortPriority(0)  // Read second
+    mainContent.accessibilitySortPriority(1)  // Read first (higher = first)
+}
+```
+
+## Forms
 
 ```swift
 Form {
@@ -248,7 +342,7 @@ class BalanceView: UIView {
 }
 ```
 
-## Testing — iOS
+## Testing
 
 ### XCTest Accessibility Audit (Xcode 15+)
 

@@ -200,7 +200,60 @@ Enforce method-level authorization checks on all privileged operations.
 | Verbose prose between sections | Delete — headings are self-explanatory |
 | JSON + code duplicating same content | Show once in canonical form |
 
-## Workflow — Creating a New Skill
+## Workflow — Generating a Skill from a Contract
+
+The preferred way to create a new skill is from a **CONTRACT.md** file. The contract is a simple bullet-point document that a human fills out. You then generate the full SKILL.md and reference files from it.
+
+### What is a CONTRACT.md?
+
+A lightweight markdown file where the skill author writes only what matters — no formatting, no structure, just bullet points. The template is at `core/CONTRACT.template.md`.
+
+A contract contains:
+- **Identity** — name, one-liner, platforms, target type
+- **Questions to ask** — what the LLM must collect from the user before starting
+- **Hard rules** — one bullet per rule, plain English, no code
+- **Standards** — policies and thresholds
+- **Platform-specific notes** — brief notes per stack
+- **Workflow** — steps the LLM follows
+- **Checklist** — definition of done
+- **Reference sections needed** — what to generate in each reference.md
+
+### Generation Steps
+
+When given a CONTRACT.md (e.g., `generate from core/accessibility/CONTRACT.md`):
+
+1. **Read the contract** — load the CONTRACT.md file
+2. **Create directories** — `core/<name>/` and platform subdirs if multiple platforms listed
+3. **Generate SKILL.md** from the contract:
+   - Build frontmatter from Identity section
+   - Write role statement from the one-liner
+   - Convert "Questions to ask" into a mandatory Step 0 gate (the LLM MUST ask these before proceeding)
+   - Convert hard rules bullets into numbered rules (no code — core skills are language-agnostic)
+   - Convert standards into a Core Standards table
+   - Add a platform-specific considerations table from the platform notes
+   - Convert workflow bullets into numbered workflow steps
+   - Convert checklist bullets into markdown checkboxes
+   - Add section navigation table mapping needs → exact headings in platform references
+   - Keep under 300 lines. No code blocks in SKILL.md.
+4. **Generate `reference.md`** (core) — expand the "All Platforms" reference sections into full content with WCAG mappings, pattern tables, templates
+5. **Generate `<platform>/reference.md`** for each platform listed — expand the "Per-Platform" reference sections into full content with:
+   - WRONG/CORRECT code examples in that platform's language
+   - Framework-specific API mappings and patterns
+   - Testing code using that platform's test framework
+   - Manual testing checklists
+   - Audit report template
+6. **Validate** — run `wc -l` on SKILL.md, verify < 300 lines, zero code blocks in SKILL.md
+7. **Summary** — list all files created and their line counts
+
+### Key Rules for Generation
+
+- **SKILL.md must have zero code blocks.** All code goes in reference files.
+- **SKILL.md must force the LLM to ask the contract's questions** before doing any work (Step 0 gate).
+- **Platform reference files must have consistent section headings** so SKILL.md can route to them by name.
+- **Every hard rule in the contract becomes a numbered rule** in SKILL.md — plain English, no code.
+- **Every platform note in the contract becomes** both a row in the SKILL.md considerations table AND detailed content in that platform's reference.md.
+
+## Workflow — Creating a Skill Manually (Without Contract)
 
 1. **Identify scope** — one skill = one concern. Two unrelated domains → split
 2. **Check overlap** — read existing skills. Reference shared content, don't duplicate
@@ -212,15 +265,22 @@ Enforce method-level authorization checks on all privileged operations.
 
 ## Quality Checklist
 
+### If generated from CONTRACT.md
+- [ ] CONTRACT.md exists in the skill directory
+- [ ] All Identity fields filled (name, one-liner, platforms, target type)
+- [ ] SKILL.md has zero code blocks — all code lives in reference files
+- [ ] SKILL.md has a Step 0 gate that forces the LLM to ask contract questions
+- [ ] Platform reference files have consistent section headings matching SKILL.md navigation table
+- [ ] Every platform listed in the contract has a `<platform>/reference.md`
+
+### All skills (contract-based or manual)
 - [ ] Frontmatter complete — `name`, `description`, `allowed-tools` present
 - [ ] `name` matches directory name (kebab-case)
 - [ ] Role statement is 1–2 lines
-- [ ] Hard rules use WRONG/CORRECT pairs (2–4 lines each)
 - [ ] No content duplicated from other skills — uses `§` references
 - [ ] Tables used instead of prose where possible
-- [ ] One code example per pattern — no variant repetition
-- [ ] Code examples show only relevant lines (no boilerplate)
-- [ ] Core skills use language-agnostic examples; stack skills use language-specific
+- [ ] Core skills: no code blocks in SKILL.md, language-agnostic rules only
+- [ ] Stack skills: code examples only as WRONG/CORRECT pairs (2–4 lines each)
 - [ ] Workflow has 3–7 numbered steps
 - [ ] Checklist covers all deliverables
 - [ ] SKILL.md under 300 lines (or justified if over)

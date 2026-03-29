@@ -1,6 +1,6 @@
 # Accessibility — Reference
 
-## §WCAG-Checklist
+## WCAG Checklist
 
 Full WCAG 2.1 AA success criteria most relevant to banking applications.
 
@@ -42,7 +42,7 @@ Full WCAG 2.1 AA success criteria most relevant to banking applications.
 
 | Criterion | ID | Requirement | Banking Context |
 |---|---|---|---|
-| Language of Page | 3.1.1 | Default language declared | `lang="en"` on HTML root |
+| Language of Page | 3.1.1 | Default language declared | lang attribute on root element |
 | Language of Parts | 3.1.2 | Language changes marked | Multilingual terms and conditions |
 | On Focus | 3.2.1 | No context change on focus | Don't submit form on field focus |
 | On Input | 3.2.2 | No unexpected context change on input | Warn before navigating away from form |
@@ -52,9 +52,17 @@ Full WCAG 2.1 AA success criteria most relevant to banking applications.
 | Error Suggestion | 3.3.3 | Suggest corrections when possible | "Did you mean IBAN format: XX00..." |
 | Error Prevention | 3.3.4 | Review step for financial/legal submissions | Confirmation page before transfers |
 
+### Robust
+
+| Criterion | ID | Requirement | Banking Context |
+|---|---|---|---|
+| Parsing | 4.1.1 | Valid markup | No duplicate IDs, proper nesting |
+| Name, Role, Value | 4.1.2 | All components expose name, role, value | Custom widgets must declare semantics |
+| Status Messages | 4.1.3 | Status messages announced without focus change | Transaction confirmations, error alerts |
+
 ---
 
-## §ARIA-Patterns
+## ARIA Patterns
 
 ### Common Banking UI Patterns
 
@@ -85,7 +93,7 @@ Full WCAG 2.1 AA success criteria most relevant to banking applications.
 
 ---
 
-## §Color-Contrast
+## Color Contrast
 
 ### Minimum Ratios (WCAG 2.1 AA)
 
@@ -106,24 +114,23 @@ Full WCAG 2.1 AA success criteria most relevant to banking applications.
 
 ---
 
-## §Form-Accessibility
+## Form Accessibility
 
 ### Required Form Patterns
 
 | Pattern | Implementation |
 |---|---|
-| Label association | `<label for="field-id">` or `aria-labelledby` — never placeholder-only |
-| Required fields | `aria-required="true"` + visual indicator (not just asterisk without explanation) |
-| Error display | Inline error below field + error summary at top; `aria-describedby` links field to error |
-| Field grouping | `<fieldset>` + `<legend>` for related fields (address, payment method) |
-| Input format hint | `aria-describedby` pointing to format example ("DD/MM/YYYY") |
-| Autocomplete | Use `autocomplete` attributes: `name`, `email`, `tel`, `cc-number`, `cc-exp` |
+| Label association | Programmatic label linked to input — never placeholder-only |
+| Required fields | Mark as required programmatically + visual indicator (not just asterisk without explanation) |
+| Error display | Inline error below field + error summary at top; link field to error description |
+| Field grouping | Group related fields (address, payment method) with a group label |
+| Input format hint | Associate format example ("DD/MM/YYYY") with the field |
+| Autocomplete | Use autocomplete attributes: `name`, `email`, `tel`, `cc-number`, `cc-exp` |
 | Submit confirmation | Review page before final submission for financial transactions |
 
-### Error Message Template
+### Error Message Structure
 
 ```
-// Structure for accessible form errors
 error_summary:
     role: "alert"
     heading: "Please fix N errors before continuing"
@@ -131,41 +138,31 @@ error_summary:
         - link to field + error description
 
 inline_error:
-    aria-describedby: links to error message element
-    aria-invalid: "true"
+    linked to field via describedby
+    invalid state: "true"
     message: "[Field name] — [what went wrong] — [how to fix]"
 ```
 
-### Example: Accessible Transfer Form Structure
+### Accessible Transfer Form Structure
 
 ```
-<form aria-label="Fund Transfer">
-  <fieldset>
-    <legend>Transfer Details</legend>
+form label="Fund Transfer"
+  fieldset label="Transfer Details"
 
-    <label for="from-account">From Account</label>
-    <select id="from-account" autocomplete="off" aria-required="true">...</select>
+    label "From Account" → select (required, no autocomplete)
 
-    <label for="to-account">To Account or IBAN</label>
-    <input id="to-account" aria-required="true"
-           aria-describedby="to-account-hint to-account-error">
-    <span id="to-account-hint">Enter account number or IBAN</span>
-    <span id="to-account-error" role="alert" hidden>
-      Account number must be 10-34 characters
-    </span>
+    label "To Account or IBAN" → input (required)
+      hint: "Enter account number or IBAN"
+      error: "Account number must be 10-34 characters"
 
-    <label for="amount">Amount</label>
-    <input id="amount" type="text" inputmode="decimal"
-           aria-required="true" autocomplete="transaction-amount">
-  </fieldset>
+    label "Amount" → input (required, decimal, autocomplete=transaction-amount)
 
-  <button type="submit">Review Transfer</button>
-</form>
+  button "Review Transfer"
 ```
 
 ---
 
-## §Testing-Methods
+## Testing Methods
 
 ### Automated Testing
 
@@ -199,8 +196,8 @@ inline_error:
 
 | Defect | Impact | Fix |
 |---|---|---|
-| Balance not in live region | Screen reader users miss updates | Add `aria-live="polite"` |
-| Transaction table missing headers | Data is meaningless without context | Add `th` with `scope` |
+| Balance not in live region | Screen reader users miss updates | Add live region with polite priority |
+| Transaction table missing headers | Data is meaningless without context | Add proper header cells with scope |
 | OTP modal doesn't trap focus | User tabs behind modal | Implement focus trap |
 | Session timeout without warning | User loses work unexpectedly | 2-min warning dialog with extend option |
 | PDF statements inaccessible | Cannot read with assistive tech | Generate tagged PDFs or provide HTML alternative |

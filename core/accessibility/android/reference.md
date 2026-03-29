@@ -2,7 +2,7 @@
 
 Android accessibility patterns for the bank's native Android applications. See `core/accessibility/SKILL.md` for core rules.
 
-## Core Principle — Use Material Components and Compose Semantics
+## Core Principle
 
 Material Design 3 components and Jetpack Compose semantics provide built-in accessibility. Configure them before building custom solutions.
 
@@ -19,7 +19,7 @@ Canvas(modifier = Modifier.semantics {
 }) { /* custom drawing */ }
 ```
 
-## Hard Rules — Android-Specific
+## Hard Rules
 
 ### All images must have contentDescription or be marked decorative
 
@@ -78,6 +78,36 @@ fun BalanceCard(balance: String) {
         contentDescription = "Current balance: $balance"
     }) { Text(balance) }
 }
+```
+
+## Anti-Patterns
+
+```kotlin
+// WRONG — Modifier.clickable without role
+Box(modifier = Modifier.clickable { action() }) { Text("Pay") }
+
+// CORRECT — declare role
+Box(modifier = Modifier.clickable(onClick = action, role = Role.Button)) { Text("Pay") }
+
+// WRONG — contentDescription on parent AND children (duplicates)
+Column(modifier = Modifier.semantics { contentDescription = "Account info" }) {
+    Text("Savings", modifier = Modifier.semantics { contentDescription = "Savings" })
+}
+
+// CORRECT — merge descendants or set on parent only
+Column(modifier = Modifier.semantics(mergeDescendants = true) {}) {
+    Text("Savings")
+    Text("$5,100")
+}
+
+// WRONG — using View.GONE to hide from TalkBack (hides visually too)
+// CORRECT — use Modifier.semantics { invisibleToUser() } for decorative only
+
+// WRONG — hardcoded text size in dp
+Text("Balance", fontSize = 14.dp) // dp doesn't scale with font settings
+
+// CORRECT — use MaterialTheme typography
+Text("Balance", style = MaterialTheme.typography.bodyMedium)
 ```
 
 ## TalkBack Patterns
@@ -148,6 +178,7 @@ view.announceForAccessibility("Transfer of $500 completed successfully")
 ```
 
 ## Font Scaling
+<!-- SKILL.md may reference this section as "Display Accommodations" -->
 
 ```kotlin
 // CORRECT — scales with system font size
@@ -218,7 +249,54 @@ Box(
 )
 ```
 
-## Forms — Accessible Pattern
+## Semantic Label Patterns
+
+```kotlin
+// Buttons — describe the action
+Button(onClick = { transfer() }) { Text("Transfer") }
+// TalkBack: "Transfer, Button" — sufficient if text is descriptive
+
+// When button text is ambiguous, add contentDescription
+IconButton(onClick = { delete() }) {
+    Icon(Icons.Default.Delete, contentDescription = "Delete March payment")
+}
+
+// Amounts — include currency context
+Text(
+    text = "$5,100.00",
+    modifier = Modifier.semantics {
+        contentDescription = "Balance: five thousand one hundred dollars"
+    }
+)
+
+// Status — include full context
+Icon(
+    Icons.Default.CheckCircle,
+    contentDescription = "Transaction status: Completed"
+)
+```
+
+## Focus & Navigation Order
+
+```kotlin
+// PREFERRED — natural Compose order matches reading order
+Column {
+    Text("Transfer Funds", modifier = Modifier.semantics { heading() })
+    OutlinedTextField(/* from account */)
+    OutlinedTextField(/* to account */)
+    OutlinedTextField(/* amount */)
+    Button(onClick = { review() }) { Text("Review Transfer") }
+}
+
+// Override order ONLY when layout doesn't match logical order
+Box {
+    SidePanel(modifier = Modifier.semantics { traversalIndex = 1f }) // Read second
+    MainContent(modifier = Modifier.semantics { traversalIndex = 0f }) // Read first
+}
+// Use traversalIndex sparingly — prefer fixing layout order
+```
+
+## Forms
 
 ```kotlin
 @Composable
@@ -287,7 +365,7 @@ fun TransferForm() {
 </com.google.android.material.textfield.TextInputLayout>
 ```
 
-## Testing — Android
+## Testing
 
 ### Compose UI Testing
 
