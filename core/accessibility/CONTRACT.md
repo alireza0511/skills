@@ -105,14 +105,9 @@
 
 ## Reference Sections Needed
 
-### All Platforms (core reference.md)
-- Full WCAG 2.1 AA checklist mapped to banking UI (Perceivable, Operable, Understandable, Robust)
-- ARIA patterns for common banking components (balance, transaction status, modals, tables, alerts)
-- Color contrast requirements and bank-specific considerations
-- Accessible form patterns for financial transactions (label association, error handling, field grouping)
-- Testing methodology — automated tools and manual testing protocol
+### Per-Platform (flutter/REFERENCE.md, react/REFERENCE.md, etc.)
 
-### Per-Platform (flutter/reference.md, react/reference.md, etc.)
+Each platform REFERENCE.md includes the core WCAG checklist, ARIA patterns, color contrast requirements, form accessibility patterns, and testing methodology — plus platform-specific content:
 - Core principle — framework's built-in accessibility approach and when to customize
 - Hard rules with WRONG/CORRECT code examples specific to the framework
 - Anti-patterns to flag during audit

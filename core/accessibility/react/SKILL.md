@@ -19,8 +19,8 @@ Before any work, you MUST ask this question. Do not guess. Do not infer. Do not 
 ### After Answer — Load References
 
 Read these files before proceeding:
-- `core/accessibility/react/reference.md` — React/Next.js-specific patterns and code examples
-- `core/accessibility/reference.md` — Core WCAG checklist and banking requirements
+- `core/accessibility/react/REFERENCE.md` — React/Next.js-specific patterns and code examples
+- `core/accessibility/react/REFERENCE.md` — Core WCAG checklist and banking requirements
 
 **Do NOT proceed to Step 1 until references are loaded.**
 
@@ -91,7 +91,7 @@ Use this table to find what you need in the loaded React reference:
 | Bank policy | Transaction confirmations announced via live regions | Required |
 | Bank policy | Session timeout: 2-min warning with extend option | Required |
 
-For the full WCAG 2.1 AA checklist mapped to banking UI, read `core/accessibility/reference.md` § WCAG Checklist.
+For the full WCAG 2.1 AA checklist mapped to banking UI, read `core/accessibility/react/REFERENCE.md` § WCAG Checklist.
 
 ## Severity Classification
 

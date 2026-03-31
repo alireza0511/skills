@@ -22,8 +22,8 @@ Before any work, you MUST ask these questions. Do not guess. Do not infer. Do no
 ### After Both Answers — Load References
 
 Read these files before proceeding:
-- `core/accessibility/flutter/reference.md` — Flutter-specific patterns and code examples
-- `core/accessibility/reference.md` — Core WCAG checklist and banking requirements
+- `core/accessibility/flutter/REFERENCE.md` — Flutter-specific patterns and code examples
+- `core/accessibility/flutter/REFERENCE.md` — Core WCAG checklist and banking requirements
 
 **Do NOT proceed to Step 1 until references are loaded.**
 
@@ -88,7 +88,7 @@ Use this table to find what you need in the loaded Flutter reference:
 | Bank policy | Transaction confirmations announced via live regions | Required |
 | Bank policy | Session timeout: 2-min warning with extend option | Required |
 
-For the full WCAG 2.1 AA checklist mapped to banking UI, read `core/accessibility/reference.md` § WCAG Checklist.
+For the full WCAG 2.1 AA checklist mapped to banking UI, read `core/accessibility/flutter/REFERENCE.md` § WCAG Checklist.
 
 ## Severity Classification
 
