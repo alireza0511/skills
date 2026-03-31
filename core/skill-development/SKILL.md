@@ -1,13 +1,13 @@
 ---
 name: skill-development
-description: Standards for writing SKILL.md and reference.md files — structure, token budget, compression rules, and quality guidelines for enterprise skill authoring
+description: Standards for writing SKILL.md, REFERENCE.md, and CONTRACT.md files — structure, token budget, compression rules, and quality guidelines for enterprise skill authoring
 allowed-tools: Read, Edit, Write, Glob, Grep, Bash
-argument-hint: "[skill name] — e.g. 'security-java', 'testing-react', 'observability'"
+argument-hint: "[skill name] — e.g. 'security', 'testing', 'observability'"
 ---
 
 # Skill Development Standards
 
-You are a skill author for the bank's enterprise Copilot skills repository. When invoked, help create or improve SKILL.md and reference.md files that follow every rule in this document.
+You are a skill author for the bank's enterprise Copilot skills repository. When invoked, help create or improve SKILL.md and REFERENCE.md files that follow every rule in this document.
 
 ## Token Budget
 
@@ -20,16 +20,31 @@ Skills are loaded into the LLM context window on every invocation. Every line co
 | Needs justification | 300–500 | Complex domains (e.g., accessibility with platform matrix) |
 | Too large | > 500 | Split into multiple skills or compress aggressively |
 
-**Measure before committing:** `wc -l core/<name>/SKILL.md` or `stacks/<lang>/<name>/SKILL.md`.
+**Measure before committing:** `wc -l` on SKILL.md.
 
-## File Split — SKILL.md vs reference.md
+## Directory Structure
 
-Every skill directory contains two files:
+Skills use a platform-specific structure. Each platform gets its own SKILL.md and REFERENCE.md. A CONTRACT.md at the skill root defines the shared contract.
+
+### Core skills (multi-platform)
 
 ```
-core/<name>/           OR    stacks/<lang>/<name>/
-├── SKILL.md                 ├── SKILL.md
-└── reference.md             └── reference.md
+core/<name>/
+├── CONTRACT.md                  # Shared contract — identity, rules, standards
+├── flutter/
+│   ├── SKILL.md                 # Flutter-specific skill (loaded into context)
+│   └── REFERENCE.md             # Flutter patterns + core reference content
+└── react/
+    ├── SKILL.md                 # React-specific skill (loaded into context)
+    └── REFERENCE.md             # React patterns + core reference content
+```
+
+### Stack skills (single platform)
+
+```
+stacks/<lang>/<name>/
+├── SKILL.md                     # Loaded into context
+└── REFERENCE.md                 # Loaded on demand
 ```
 
 ### SKILL.md (always loaded into context)
@@ -39,35 +54,57 @@ core/<name>/           OR    stacks/<lang>/<name>/
 - Workflow steps and checklist
 - **Budget: < 300 lines**
 
-### reference.md (loaded on demand)
+### REFERENCE.md (loaded on demand)
 
 - Full code examples (complete classes, test suites, configs)
 - Audit/report templates
 - Extended mapping tables
 - Platform-specific checklists
+- Core reference content (WCAG checklist, commit format, etc.) merged in
 - Migration guides and walkthroughs
 
 ### How SKILL.md references it
 
 ```markdown
-For full code examples, read `core/<name>/reference.md` § Section Name.
+For full code examples, read `core/<name>/flutter/REFERENCE.md` § Section Name.
 ```
 
-The agent reads reference.md only when it needs that section — not on every invocation.
+The agent reads REFERENCE.md only when it needs that section — not on every invocation.
 
-### reference.md format
+### REFERENCE.md format
 
 No frontmatter. Use clear `##` section headings so SKILL.md can point to specific sections with `§`.
 
 ```markdown
-# <Skill Name> — Reference
+# <Skill Name> — <Platform> Reference
 
 ## Section Name
 [detailed content]
 
 ## Another Section
 [detailed content]
+
+---
+
+# Core <Skill Name> Reference
+
+## Shared Section
+[core content merged into each platform REFERENCE.md]
 ```
+
+### CONTRACT.md
+
+A lightweight markdown file where the skill author defines the shared contract across all platforms. The template is at `core/CONTRACT.template.md`.
+
+A contract contains:
+- **Identity** — name, one-liner, platforms, target type
+- **Questions to ask** — what the LLM must collect from the user before starting
+- **Hard rules** — one bullet per rule, plain English, no code
+- **Standards** — policies and thresholds
+- **Platform-specific notes** — brief notes per platform
+- **Workflow** — steps the LLM follows
+- **Checklist** — definition of done
+- **Reference sections needed** — what to include in each platform's REFERENCE.md
 
 ## Required SKILL.md Structure
 
@@ -86,7 +123,7 @@ argument-hint: "[what the user passes] — e.g. 'widget name', 'service name'"
 
 | Field | Required | Rules |
 |-------|----------|-------|
-| `name` | Yes | Kebab-case, must match directory name |
+| `name` | Yes | Kebab-case, must match directory path context |
 | `description` | Yes | Search-optimized — include key terms users would type |
 | `allowed-tools` | Yes | Only tools the skill needs. Don't grant tools it doesn't use |
 | `argument-hint` | No | Format + 1–2 examples. Omit if skill takes no arguments |
@@ -97,17 +134,35 @@ argument-hint: "[what the user passes] — e.g. 'widget name', 'service name'"
 You are a [role] for [context]. When invoked, [what you do].
 ```
 
-For **core skills** (language-agnostic):
+For **platform-specific core skills**:
 ```markdown
-You are a security expert for bank services. When invoked, audit and fix security issues against bank policy.
+You are an accessibility expert for the bank's Flutter applications. When invoked, audit and fix accessibility issues against WCAG 2.1 AA and bank policy.
 ```
 
-For **stack skills** (language-specific):
+For **stack skills**:
 ```markdown
 You are a security expert for the bank's Java/Spring services. When invoked, audit and fix Java-specific security issues against bank policy.
 ```
 
-### 3. Hard Rules
+### 3. Step 0 — Collect Context (MANDATORY for multi-platform skills)
+
+The SKILL.md must force the LLM to ask the contract's questions before doing any work:
+
+```markdown
+## Step 0 — Collect Context (MANDATORY)
+
+Before any work, you MUST ask this question. Do not guess. Do not proceed until answered.
+
+**Q1: Audit scope**
+> "What should I audit: **full app**, **specific screen/page**, **specific component**, or **PR/diff changes only**?"
+
+### After Answer — Load Reference
+
+Read this file before proceeding:
+- `core/<name>/<platform>/REFERENCE.md`
+```
+
+### 4. Hard Rules
 
 Non-negotiable constraints. Each rule:
 - One sentence stating the rule
@@ -116,18 +171,18 @@ Non-negotiable constraints. Each rule:
 Do NOT duplicate rules from another skill. Reference instead:
 
 ```markdown
-> All security rules from `core/security/SKILL.md` § Hard Rules apply here.
+> All security rules from `core/security/flutter/SKILL.md` § Hard Rules apply here.
 ```
 
-### 4. Core Content
+### 5. Core Content
 
 Domain-specific guidance. Structure varies by skill but must follow compression rules below.
 
-### 5. Workflow (3–7 steps)
+### 6. Workflow (3–7 steps)
 
 Numbered steps the agent follows when invoked.
 
-### 6. Checklist
+### 7. Checklist
 
 Markdown checkbox list of deliverables. The agent checks these before finishing.
 
@@ -156,7 +211,7 @@ Show the pattern once. Use a table for variant differences.
 If content exists in another skill, point to it:
 
 ```markdown
-See `core/testing/SKILL.md` § Checklist for the test coverage policy.
+See `core/testing/flutter/SKILL.md` § Checklist for the test coverage policy.
 ```
 
 Never copy-paste sections between skills.
@@ -168,17 +223,9 @@ Never copy-paste sections between skills.
 - Max **one** WRONG/CORRECT pair per rule
 - Omit imports, boilerplate, and obvious setup
 
-### Language-agnostic examples in core skills
+### Core reference content merged into platform REFERENCE.md
 
-Core skills must use pseudocode or generic patterns. Language-specific examples belong in stack skills.
-
-```markdown
-<!-- WRONG in a core skill — Java-specific -->
-@PreAuthorize("hasRole('ADMIN')")
-
-<!-- CORRECT in a core skill — language-agnostic -->
-Enforce method-level authorization checks on all privileged operations.
-```
+Shared content (WCAG checklist, commit format, branch strategy, etc.) is merged directly into each platform's REFERENCE.md — not kept in a separate shared file. This ensures each platform REFERENCE.md is self-contained.
 
 ### Shorthand conventions
 
@@ -199,91 +246,75 @@ Enforce method-level authorization checks on all privileged operations.
 | Multiple examples for one rule | One WRONG/CORRECT pair max |
 | Verbose prose between sections | Delete — headings are self-explanatory |
 | JSON + code duplicating same content | Show once in canonical form |
+| Shared reference.md at skill root | Merge core content into each platform's REFERENCE.md |
+| Lowercase reference.md | Use REFERENCE.md (uppercase) |
 
 ## Workflow — Generating a Skill from a Contract
-
-The preferred way to create a new skill is from a **CONTRACT.md** file. The contract is a simple bullet-point document that a human fills out. You then generate the full SKILL.md and reference files from it.
-
-### What is a CONTRACT.md?
-
-A lightweight markdown file where the skill author writes only what matters — no formatting, no structure, just bullet points. The template is at `core/CONTRACT.template.md`.
-
-A contract contains:
-- **Identity** — name, one-liner, platforms, target type
-- **Questions to ask** — what the LLM must collect from the user before starting
-- **Hard rules** — one bullet per rule, plain English, no code
-- **Standards** — policies and thresholds
-- **Platform-specific notes** — brief notes per stack
-- **Workflow** — steps the LLM follows
-- **Checklist** — definition of done
-- **Reference sections needed** — what to generate in each reference.md
 
 ### Generation Steps
 
 When given a CONTRACT.md (e.g., `generate from core/accessibility/CONTRACT.md`):
 
 1. **Read the contract** — load the CONTRACT.md file
-2. **Create directories** — `core/<name>/` and platform subdirs if multiple platforms listed
-3. **Generate SKILL.md** from the contract:
-   - Build frontmatter from Identity section
-   - Write role statement from the one-liner
-   - Convert "Questions to ask" into a mandatory Step 0 gate (the LLM MUST ask these before proceeding)
-   - Convert hard rules bullets into numbered rules (no code — core skills are language-agnostic)
+2. **Create directories** — `core/<name>/flutter/` and `core/<name>/react/` (or whichever platforms are listed)
+3. **Generate platform SKILL.md files** from the contract:
+   - Build frontmatter with platform-specific name (e.g., `accessibility-flutter`)
+   - Write role statement scoped to the platform
+   - Convert "Questions to ask" into a mandatory Step 0 gate
+   - Convert hard rules into numbered rules with platform-specific code examples
    - Convert standards into a Core Standards table
-   - Add a platform-specific considerations table from the platform notes
-   - Convert workflow bullets into numbered workflow steps
-   - Convert checklist bullets into markdown checkboxes
-   - Add section navigation table mapping needs → exact headings in platform references
-   - Keep under 300 lines. No code blocks in SKILL.md.
-4. **Generate `reference.md`** (core) — expand the "All Platforms" reference sections into full content with WCAG mappings, pattern tables, templates
-5. **Generate `<platform>/reference.md`** for each platform listed — expand the "Per-Platform" reference sections into full content with:
-   - WRONG/CORRECT code examples in that platform's language
-   - Framework-specific API mappings and patterns
-   - Testing code using that platform's test framework
-   - Manual testing checklists
-   - Audit report template
-6. **Validate** — run `wc -l` on SKILL.md, verify < 300 lines, zero code blocks in SKILL.md
-7. **Summary** — list all files created and their line counts
+   - Add platform-specific constraints
+   - Convert workflow into numbered steps referencing the platform's REFERENCE.md
+   - Convert checklist into markdown checkboxes
+   - Add section navigation table mapping needs to REFERENCE.md headings
+   - Keep under 300 lines
+4. **Generate platform REFERENCE.md files** — for each platform:
+   - Platform-specific content: WRONG/CORRECT code examples, API mappings, testing patterns, audit templates
+   - Core reference content merged in: shared standards, checklists, patterns that apply to all platforms
+   - Each REFERENCE.md must be self-contained
+5. **Validate** — run `wc -l` on each SKILL.md, verify < 300 lines
+6. **Summary** — list all files created and their line counts
 
 ### Key Rules for Generation
 
-- **SKILL.md must have zero code blocks.** All code goes in reference files.
+- **Each platform gets its own SKILL.md and REFERENCE.md.** No shared SKILL.md or REFERENCE.md at the skill root.
+- **CONTRACT.md stays at the skill root** as the shared contract definition.
 - **SKILL.md must force the LLM to ask the contract's questions** before doing any work (Step 0 gate).
-- **Platform reference files must have consistent section headings** so SKILL.md can route to them by name.
-- **Every hard rule in the contract becomes a numbered rule** in SKILL.md — plain English, no code.
-- **Every platform note in the contract becomes** both a row in the SKILL.md considerations table AND detailed content in that platform's reference.md.
+- **Platform REFERENCE.md files must have consistent section headings** so SKILL.md can route to them by name.
+- **Core reference content is merged into each platform's REFERENCE.md** — not kept as a separate file.
+- **Every hard rule in the contract becomes a numbered rule** in each platform's SKILL.md with platform-appropriate code examples.
 
 ## Workflow — Creating a Skill Manually (Without Contract)
 
-1. **Identify scope** — one skill = one concern. Two unrelated domains → split
+1. **Identify scope** — one skill = one concern. Two unrelated domains -> split
 2. **Check overlap** — read existing skills. Reference shared content, don't duplicate
-3. **Determine tier** — core (language-agnostic) goes in `core/`, stack-specific goes in `stacks/<lang>/`
-4. **Write SKILL.md** — frontmatter → role statement → hard rules → core content → workflow → checklist
-5. **Split heavy content** — move full examples, templates, matrices to `reference.md`. Add `§` references
-6. **Compress** — review every line. Delete anything that doesn't change agent behavior. Run `wc -l`
-7. **Validate** — run `scripts/validate-frontmatter.sh` and `scripts/check-line-budget.sh`
+3. **Determine platforms** — create a subdirectory per platform under `core/<name>/`
+4. **Write CONTRACT.md** — define shared identity, rules, standards at skill root
+5. **Write platform SKILL.md files** — frontmatter, role, Step 0, hard rules, core content, workflow, checklist
+6. **Write platform REFERENCE.md files** — full examples, templates, core reference merged in
+7. **Compress** — review every line. Delete anything that doesn't change agent behavior. Run `wc -l`
+8. **Validate** — run `scripts/validate-frontmatter.sh` and `scripts/check-line-budget.sh`
 
 ## Quality Checklist
 
-### If generated from CONTRACT.md
-- [ ] CONTRACT.md exists in the skill directory
+### Contract-based skills
+- [ ] CONTRACT.md exists at the skill root
 - [ ] All Identity fields filled (name, one-liner, platforms, target type)
-- [ ] SKILL.md has zero code blocks — all code lives in reference files
-- [ ] SKILL.md has a Step 0 gate that forces the LLM to ask contract questions
-- [ ] Platform reference files have consistent section headings matching SKILL.md navigation table
-- [ ] Every platform listed in the contract has a `<platform>/reference.md`
+- [ ] Each platform listed in the contract has its own `<platform>/SKILL.md` and `<platform>/REFERENCE.md`
+- [ ] No SKILL.md or REFERENCE.md at the skill root (only CONTRACT.md)
+- [ ] Each SKILL.md has a Step 0 gate that forces the LLM to ask contract questions
+- [ ] Platform REFERENCE.md files have consistent section headings matching SKILL.md navigation table
+- [ ] Core reference content merged into each platform REFERENCE.md (no shared reference file)
 
-### All skills (contract-based or manual)
+### All skills
 - [ ] Frontmatter complete — `name`, `description`, `allowed-tools` present
-- [ ] `name` matches directory name (kebab-case)
 - [ ] Role statement is 1–2 lines
 - [ ] No content duplicated from other skills — uses `§` references
 - [ ] Tables used instead of prose where possible
-- [ ] Core skills: no code blocks in SKILL.md, language-agnostic rules only
-- [ ] Stack skills: code examples only as WRONG/CORRECT pairs (2–4 lines each)
+- [ ] Code examples only as WRONG/CORRECT pairs (2–4 lines each)
 - [ ] Workflow has 3–7 numbered steps
 - [ ] Checklist covers all deliverables
 - [ ] SKILL.md under 300 lines (or justified if over)
-- [ ] Heavy content moved to `reference.md` with `§` references
+- [ ] Heavy content moved to REFERENCE.md with `§` references
 - [ ] `wc -l` verified before committing
 - [ ] CI validation passes: `scripts/validate-frontmatter.sh`, `scripts/check-line-budget.sh`

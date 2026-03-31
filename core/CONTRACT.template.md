@@ -4,6 +4,18 @@
 > Then invoke the `skill-development` skill to generate the full SKILL.md and reference files from this contract.
 >
 > Usage: `@skill-development generate from core/<name>/CONTRACT.md`
+>
+> Output structure:
+> ```
+> core/<name>/
+> ├── CONTRACT.md
+> ├── flutter/
+> │   ├── SKILL.md
+> │   └── REFERENCE.md
+> └── react/
+>     ├── SKILL.md
+>     └── REFERENCE.md
+> ```
 
 ## Identity
 
@@ -74,12 +86,11 @@
 
 ## Reference Sections Needed
 
-<!-- List the sections you want in each platform's reference.md. The LLM will generate full content for each. -->
+<!-- List the sections you want in each platform's REFERENCE.md. Core reference content is merged into each platform's REFERENCE.md (no separate shared file). -->
 
-### All Platforms (core reference.md)
--
--
+### Per-Platform (flutter/REFERENCE.md, react/REFERENCE.md, etc.)
 
-### Per-Platform (flutter/reference.md, react/reference.md, etc.)
+Each platform REFERENCE.md includes core shared content plus platform-specific content:
+
 -
 -
