@@ -8,20 +8,18 @@ This repository follows a federated ownership model. Each area has a designated 
 
 | Path | Owner |
 |---|---|
-| `/` (root), `core/`, `agents/`, `scripts/`, `.github/` | **Platform Engineering** (`@org/platform-engineering`) |
-| `stacks/flutter/` | **Mobile Team** (`@org/mobile-team`) |
-| `stacks/java/` | **Backend Team** (`@org/backend-team`) |
-| `stacks/react/` | **Frontend Team** (`@org/frontend-team`) |
+| `/` (root), `skills/`, `agents/`, `scripts/`, `.github/` | **Platform Engineering** (`@org/platform-engineering`) |
+| `skills/frontend/` | **Frontend Team** (`@org/frontend-team`) |
 
 Ownership is enforced via the `CODEOWNERS` file at the repository root.
 
 ## PR Workflow
 
-1. **Create a feature branch** from `main` with a descriptive name (e.g., `feat/core-security-sql-injection-rule`).
+1. **Create a feature branch** from `main` with a descriptive name (e.g., `feat/frontend-accessibility-color-contrast`).
 2. **Open a Pull Request** targeting `main`.
 3. **Required reviewers** are automatically assigned via CODEOWNERS:
    - **Platform Engineering** is required on every PR (they own root).
-   - The **domain owner** for the affected path is also required (e.g., `@org/mobile-team` for changes under `stacks/flutter/`).
+   - The **domain owner** for the affected path is also required (e.g., `@org/frontend-team` for changes under `skills/frontend/`).
 4. **CI must pass** -- all checks described below must be green before merge.
 5. **Merge** using squash-merge to keep the history clean.
 
@@ -30,7 +28,7 @@ Ownership is enforced via the `CODEOWNERS` file at the repository root.
 Skills follow a platform-specific structure. Multi-platform core skills have a `CONTRACT.md` at the skill root, with platform subdirectories each containing a `SKILL.md` and `REFERENCE.md`.
 
 ```
-core/<name>/
+skills/<category>/<name>/
 ├── CONTRACT.md
 ├── flutter/
 │   ├── SKILL.md
@@ -40,7 +38,7 @@ core/<name>/
     └── REFERENCE.md
 ```
 
-For comprehensive authoring instructions, templates, and examples, refer to the **`core/skill-development/`** meta-skill.
+For comprehensive authoring instructions, templates, and examples, refer to the **`skills/skill-development/`** meta-skill.
 
 ### Frontmatter Requirements
 
@@ -54,7 +52,7 @@ allowed-tools: <list of tools the skill may invoke>
 ---
 ```
 
-Additional optional fields (version, tags, dependencies) are documented in `core/skill-development/`.
+Additional optional fields (version, tags, dependencies) are documented in `skills/skill-development/`.
 
 ### Line Budget
 
@@ -82,7 +80,7 @@ The following checks must pass on every PR:
 
 1. **Frontmatter validation** -- `SKILL.md` files must have `name`, `description`, and `allowed-tools` in their YAML frontmatter.
 2. **REFERENCE.md presence** -- every directory containing a `SKILL.md` must also contain a `REFERENCE.md`.
-3. **CONTRACT.md presence** -- every multi-platform core skill must have a `CONTRACT.md` at the skill root.
+3. **CONTRACT.md presence** -- every multi-platform skill must have a `CONTRACT.md` at the skill root.
 4. **Line budget enforcement** -- `SKILL.md` files exceeding 500 lines cause a failure; files exceeding 300 lines cause a warning.
 5. **JSON lint** -- `manifest.json` must be valid JSON.
 6. **Shell lint** -- `install.sh` must pass `shellcheck`.

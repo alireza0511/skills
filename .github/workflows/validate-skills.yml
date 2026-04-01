@@ -3,8 +3,7 @@ name: Validate Copilot Skills (PR)
 on:
   pull_request:
     paths:
-      - "core/**"
-      - "stacks/**"
+      - "skills/**"
       - "agents/**"
 
 permissions:
@@ -58,10 +57,10 @@ jobs:
               echo "::error::Missing REFERENCE.md in ${dir}/"
               EXIT_CODE=1
             fi
-          done < <(find core stacks -name 'SKILL.md' -print0 2>/dev/null || true)
+          done < <(find skills -name 'SKILL.md' -print0 2>/dev/null || true)
 
-          # Check CONTRACT.md for multi-platform core skills
-          for skill_root in core/*/; do
+          # Check CONTRACT.md for multi-platform skills
+          for skill_root in skills/*/; do
             [ -d "$skill_root" ] || continue
             has_platform=false
             for subdir in "$skill_root"*/; do
@@ -135,7 +134,7 @@ jobs:
           )
 
           for pattern in "${PATTERNS[@]}"; do
-            MATCHES=$(grep -rPn "$pattern" core/ stacks/ agents/ 2>/dev/null || true)
+            MATCHES=$(grep -rPn "$pattern" skills/ agents/ 2>/dev/null || true)
             if [ -n "$MATCHES" ]; then
               echo "::error::Potential secret found matching pattern: $pattern"
               echo "$MATCHES"

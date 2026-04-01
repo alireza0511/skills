@@ -26,10 +26,10 @@ Skills are loaded into the LLM context window on every invocation. Every line co
 
 Skills use a platform-specific structure. Each platform gets its own SKILL.md and REFERENCE.md. A CONTRACT.md at the skill root defines the shared contract.
 
-### Core skills (multi-platform)
+### Frontend skills (multi-platform)
 
 ```
-core/<name>/
+skills/frontend/<name>/
 ├── CONTRACT.md                  # Shared contract — identity, rules, standards
 ├── flutter/
 │   ├── SKILL.md                 # Flutter-specific skill (loaded into context)
@@ -39,10 +39,10 @@ core/<name>/
     └── REFERENCE.md             # React patterns + core reference content
 ```
 
-### Stack skills (single platform)
+### Standalone skills (single concern)
 
 ```
-stacks/<lang>/<name>/
+skills/<name>/
 ├── SKILL.md                     # Loaded into context
 └── REFERENCE.md                 # Loaded on demand
 ```
@@ -66,7 +66,7 @@ stacks/<lang>/<name>/
 ### How SKILL.md references it
 
 ```markdown
-For full code examples, read `core/<name>/flutter/REFERENCE.md` § Section Name.
+For full code examples, read `skills/frontend/<name>/flutter/REFERENCE.md` § Section Name.
 ```
 
 The agent reads REFERENCE.md only when it needs that section — not on every invocation.
@@ -94,7 +94,7 @@ No frontmatter. Use clear `##` section headings so SKILL.md can point to specifi
 
 ### CONTRACT.md
 
-A lightweight markdown file where the skill author defines the shared contract across all platforms. The template is at `core/CONTRACT.template.md`.
+A lightweight markdown file where the skill author defines the shared contract across all platforms. The template is at `skills/CONTRACT.template.md`.
 
 A contract contains:
 - **Identity** — name, one-liner, platforms, target type
@@ -159,7 +159,7 @@ Before any work, you MUST ask this question. Do not guess. Do not proceed until 
 ### After Answer — Load Reference
 
 Read this file before proceeding:
-- `core/<name>/<platform>/REFERENCE.md`
+- `skills/frontend/<name>/<platform>/REFERENCE.md`
 ```
 
 ### 4. Hard Rules
@@ -171,7 +171,7 @@ Non-negotiable constraints. Each rule:
 Do NOT duplicate rules from another skill. Reference instead:
 
 ```markdown
-> All security rules from `core/security/flutter/SKILL.md` § Hard Rules apply here.
+> All security rules from `skills/frontend/security/flutter/SKILL.md` § Hard Rules apply here.
 ```
 
 ### 5. Core Content
@@ -211,7 +211,7 @@ Show the pattern once. Use a table for variant differences.
 If content exists in another skill, point to it:
 
 ```markdown
-See `core/testing/flutter/SKILL.md` § Checklist for the test coverage policy.
+See `skills/frontend/testing/flutter/SKILL.md` § Checklist for the test coverage policy.
 ```
 
 Never copy-paste sections between skills.
@@ -253,10 +253,10 @@ Shared content (WCAG checklist, commit format, branch strategy, etc.) is merged 
 
 ### Generation Steps
 
-When given a CONTRACT.md (e.g., `generate from core/accessibility/CONTRACT.md`):
+When given a CONTRACT.md (e.g., `generate from skills/frontend/accessibility/CONTRACT.md`):
 
 1. **Read the contract** — load the CONTRACT.md file
-2. **Create directories** — `core/<name>/flutter/` and `core/<name>/react/` (or whichever platforms are listed)
+2. **Create directories** — `skills/frontend/<name>/flutter/` and `skills/frontend/<name>/react/` (or whichever platforms are listed)
 3. **Generate platform SKILL.md files** from the contract:
    - Build frontmatter with platform-specific name (e.g., `accessibility-flutter`)
    - Write role statement scoped to the platform
@@ -288,7 +288,7 @@ When given a CONTRACT.md (e.g., `generate from core/accessibility/CONTRACT.md`):
 
 1. **Identify scope** — one skill = one concern. Two unrelated domains -> split
 2. **Check overlap** — read existing skills. Reference shared content, don't duplicate
-3. **Determine platforms** — create a subdirectory per platform under `core/<name>/`
+3. **Determine platforms** — create a subdirectory per platform under `skills/frontend/<name>/`
 4. **Write CONTRACT.md** — define shared identity, rules, standards at skill root
 5. **Write platform SKILL.md files** — frontmatter, role, Step 0, hard rules, core content, workflow, checklist
 6. **Write platform REFERENCE.md files** — full examples, templates, core reference merged in

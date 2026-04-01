@@ -88,7 +88,7 @@ Use this table to find what you need in the loaded Flutter reference:
 | Policy | Transaction confirmations announced via live regions | Required |
 | Policy | Session timeout: 2-min warning with extend option | Required |
 
-For the full WCAG 2.1 AA checklist mapped to banking UI, read `core/accessibility/flutter/REFERENCE.md` § WCAG Checklist.
+For the full WCAG 2.1 AA checklist mapped to banking UI, read `skills/frontend/accessibility/flutter/REFERENCE.md` § WCAG Checklist.
 
 ## Severity Classification
 

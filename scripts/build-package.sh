@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Build a distributable tar.gz package of copilot-skills.
-# Reads version from manifest.json, packages core/, stacks/, agents/,
+# Reads version from manifest.json, packages skills/, agents/,
 # install.sh, and manifest.json, then computes a sha256 checksum.
 
 # Read version from manifest.json
@@ -24,7 +24,7 @@ echo "Building package version ${VERSION}..." >&2
 
 # Verify required directories and files exist
 CONTENTS=()
-for item in core stacks agents install.sh manifest.json; do
+for item in skills agents install.sh manifest.json; do
   if [ -e "$item" ]; then
     CONTENTS+=("$item")
   else

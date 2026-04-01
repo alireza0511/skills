@@ -2,17 +2,12 @@
   "name": "copilot-skills",
   "version": "0.1.0",
   "description": "Enterprise GitHub Copilot skills and agents for development standards",
-  "core_skills": [
-    "accessibility",
-    "code-review",
+  "skills": [
+    "frontend/accessibility",
+    "frontend/code-review",
     "skill-development"
   ],
   "platforms": [
-    "flutter",
-    "react"
-  ],
-  "stacks": [
-    "java",
     "flutter",
     "react"
   ],

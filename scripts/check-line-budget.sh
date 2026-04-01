@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Check line counts for all SKILL.md files under core/ and stacks/.
+# Check line counts for all SKILL.md files under skills/.
 # Categories:
 #   ideal:              < 150 lines
 #   acceptable:         150 - 300 lines
@@ -53,7 +53,7 @@ while IFS= read -r -d '' skill_file; do
       printf "%-60s %6d   %-20s\n" "$skill_file" "$line_count" "   $status"
       ;;
   esac
-done < <(find core stacks -name 'SKILL.md' -print0 2>/dev/null || true)
+done < <(find skills -name 'SKILL.md' -print0 2>/dev/null || true)
 
 echo ""
 echo "=== Summary ==="

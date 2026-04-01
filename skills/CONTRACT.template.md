@@ -3,11 +3,11 @@
 > Fill in the bullet points below. Keep it brief — just what matters.
 > Then invoke the `skill-development` skill to generate the full SKILL.md and reference files from this contract.
 >
-> Usage: `@skill-development generate from core/<name>/CONTRACT.md`
+> Usage: `@skill-development generate from skills/frontend/<name>/CONTRACT.md`
 >
 > Output structure:
 > ```
-> core/<name>/
+> skills/frontend/<name>/
 > ├── CONTRACT.md
 > ├── flutter/
 > │   ├── SKILL.md

@@ -23,7 +23,7 @@ Before any work, you MUST ask this question. Do not guess. Do not infer. Do not 
 ### After Answer — Load Reference
 
 Read this file before proceeding:
-- `core/code-review/react/REFERENCE.md` — Full review standards, commit format, branch strategy, PR template, React-specific patterns
+- `skills/frontend/code-review/react/REFERENCE.md` — Full review standards, commit format, branch strategy, PR template, React-specific patterns
 
 **Do NOT proceed to Step 1 until reference is loaded.**
 

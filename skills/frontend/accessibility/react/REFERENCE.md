@@ -1,6 +1,6 @@
 # Accessibility — React / Next.js Reference
 
-React and Next.js accessibility patterns for web applications. See `core/accessibility/react/SKILL.md` for core rules.
+React and Next.js accessibility patterns for web applications. See `skills/frontend/accessibility/react/SKILL.md` for core rules.
 
 ## Core Principle
 

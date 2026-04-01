@@ -1,6 +1,6 @@
 # Accessibility — Flutter Reference
 
-Flutter-specific accessibility patterns for mobile applications. See `core/accessibility/flutter/SKILL.md` for core rules.
+Flutter-specific accessibility patterns for mobile applications. See `skills/frontend/accessibility/flutter/SKILL.md` for core rules.
 
 ## Core Principle
 

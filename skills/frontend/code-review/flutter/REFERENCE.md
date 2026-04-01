@@ -1,6 +1,6 @@
 # Code Review — Flutter Reference
 
-Flutter-specific code review patterns for mobile applications. See `core/code-review/flutter/SKILL.md` for core rules.
+Flutter-specific code review patterns for mobile applications. See `skills/frontend/code-review/flutter/SKILL.md` for core rules.
 
 ## Flutter Review Patterns
 

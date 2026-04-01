@@ -1,6 +1,6 @@
 # Code Review — React / Next.js Reference
 
-React and Next.js code review patterns for web applications. See `core/code-review/react/SKILL.md` for core rules.
+React and Next.js code review patterns for web applications. See `skills/frontend/code-review/react/SKILL.md` for core rules.
 
 ## React Review Patterns
 

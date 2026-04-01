@@ -90,7 +90,7 @@ Before any work, you MUST ask this question. Do not proceed until answered.
 
 ### After Answer — Load Reference
 
-Read `core/error-handling/flutter/REFERENCE.md` before proceeding.
+Read `skills/frontend/error-handling/flutter/REFERENCE.md` before proceeding.
 
 ## Hard Rules
 
@@ -129,7 +129,7 @@ ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Something wen
 ```markdown
 # Error Handling — Flutter Reference
 
-Flutter-specific error handling patterns. See `core/error-handling/flutter/SKILL.md` for core rules.
+Flutter-specific error handling patterns. See `skills/frontend/error-handling/flutter/SKILL.md` for core rules.
 
 ## Error Display Patterns
 
@@ -199,10 +199,10 @@ class Failure<T> extends Result<T> {
 
 ## Naming Convention for Skill Directories
 
-### Core skills (multi-platform)
+### Frontend skills (multi-platform)
 
 ```
-core/<topic>/
+skills/frontend/<topic>/
 ├── CONTRACT.md
 ├── flutter/
 │   ├── SKILL.md
@@ -214,44 +214,42 @@ core/<topic>/
 
 Topic names are singular, kebab-case: `security`, `testing`, `api-design`, `error-handling`, `accessibility`, `code-review`.
 
-### Stack skills (single platform)
+### Standalone skills (single concern)
 
 ```
-stacks/<language>/<topic>-<language>/
+skills/<topic>/
 ├── SKILL.md
 └── REFERENCE.md
 ```
 
 Examples:
-- `stacks/java/security-java/`
-- `stacks/kotlin/testing-kotlin/`
-
-The `<topic>` in the stack skill name matches the core skill it extends.
+- `skills/skill-development/`
+- `skills/frontend/accessibility/`
 
 ## Cross-Referencing Between Skills
 
 ### Platform skill referencing another platform skill
 
 ```markdown
-> Logging rules from `core/observability/flutter/SKILL.md` § Hard Rules apply to error logging.
+> Logging rules from `skills/frontend/observability/flutter/SKILL.md` § Hard Rules apply to error logging.
 ```
 
 ### Stack skill referencing a core platform skill
 
 ```markdown
-> All rules from `core/security/flutter/SKILL.md` apply here. This skill adds Dart-specific implementation guidance.
+> All rules from `skills/frontend/security/flutter/SKILL.md` apply here. This skill adds Dart-specific implementation guidance.
 ```
 
 ### SKILL.md referencing its own REFERENCE.md
 
 ```markdown
-For full code examples, read `core/error-handling/flutter/REFERENCE.md` § Result Type Pattern.
+For full code examples, read `skills/frontend/error-handling/flutter/REFERENCE.md` § Result Type Pattern.
 ```
 
 ### Cross-platform reference
 
 ```markdown
-See `core/accessibility/react/SKILL.md` § Hard Rules for the React equivalent.
+See `skills/frontend/accessibility/react/SKILL.md` § Hard Rules for the React equivalent.
 ```
 
 ## CI Validation Rules

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Validate YAML frontmatter in all SKILL.md files.
-# Searches core/<skill>/<platform>/SKILL.md, core/<skill>/SKILL.md, and stacks/<lang>/<skill>/SKILL.md.
+# Searches skills/<category>/<skill>/<platform>/SKILL.md and skills/<skill>/SKILL.md.
 # Required fields: name, description, allowed-tools
 
 EXIT_CODE=0
@@ -57,7 +57,7 @@ validate_file() {
 echo "=== Frontmatter Validation ==="
 echo ""
 
-# Find all SKILL.md files under core/ and stacks/
+# Find all SKILL.md files under skills/
 while IFS= read -r -d '' skill_file; do
   FILES_CHECKED=$((FILES_CHECKED + 1))
 
@@ -65,7 +65,7 @@ while IFS= read -r -d '' skill_file; do
     ERRORS=$((ERRORS + 1))
     EXIT_CODE=1
   fi
-done < <(find core stacks -name 'SKILL.md' -print0 2>/dev/null || true)
+done < <(find skills -name 'SKILL.md' -print0 2>/dev/null || true)
 
 echo ""
 echo "=== Summary ==="

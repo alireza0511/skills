@@ -60,7 +60,7 @@ check_file() {
 echo "=== Code Block Size Check ==="
 echo ""
 
-# Find all SKILL.md files under core/ and stacks/
+# Find all SKILL.md files under skills/
 while IFS= read -r -d '' skill_file; do
   FILES_CHECKED=$((FILES_CHECKED + 1))
   echo "Checking: $skill_file"
@@ -70,7 +70,7 @@ while IFS= read -r -d '' skill_file; do
   else
     echo "  OK"
   fi
-done < <(find core stacks -name 'SKILL.md' -print0 2>/dev/null || true)
+done < <(find skills -name 'SKILL.md' -print0 2>/dev/null || true)
 
 echo ""
 echo "=== Summary ==="

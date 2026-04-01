@@ -10,7 +10,7 @@ set -euo pipefail
 #
 # Also checks:
 #   - Every platform SKILL.md has a sibling REFERENCE.md
-#   - Multi-platform skill roots (core/<name>/) have a CONTRACT.md
+#   - Multi-platform skill roots (skills/<category>/<name>/) have a CONTRACT.md
 
 EXIT_CODE=0
 FILES_CHECKED=0
@@ -64,7 +64,7 @@ check_file() {
 echo "=== Structure Check ==="
 echo ""
 
-# Find all SKILL.md files under core/ and stacks/
+# Find all SKILL.md files under skills/
 while IFS= read -r -d '' skill_file; do
   FILES_CHECKED=$((FILES_CHECKED + 1))
   echo "Checking: $skill_file"
@@ -76,12 +76,12 @@ while IFS= read -r -d '' skill_file; do
   else
     echo "  OK"
   fi
-done < <(find core stacks -name 'SKILL.md' -print0 2>/dev/null || true)
+done < <(find skills -name 'SKILL.md' -print0 2>/dev/null || true)
 
-# Check that multi-platform core skills have CONTRACT.md
+# Check that multi-platform skills have CONTRACT.md
 echo ""
 echo "--- CONTRACT.md Check ---"
-for skill_root in core/*/; do
+for skill_root in skills/*/; do
   [ -d "$skill_root" ] || continue
 
   # Skip skill-development (single-level skill, no platforms)
