@@ -243,7 +243,6 @@ Shared content (WCAG checklist, commit format, branch strategy, etc.) is merged 
 | Anti-pattern | Fix |
 |-------------|-----|
 | Full file as example (30+ lines) | Show only relevant 3–5 lines |
-| Repeating rules from another skill | Reference with `§` notation |
 | Explaining language basics | State project-specific constraints only |
 | Multiple examples for one rule | One WRONG/CORRECT pair max |
 | Verbose prose between sections | Delete — headings are self-explanatory |
@@ -311,7 +310,6 @@ When given a CONTRACT.md (e.g., `generate from skills/<category>/<name>/CONTRACT
 ### All skills
 - [ ] Frontmatter complete — `name`, `description`, `allowed-tools` present
 - [ ] Role statement is 1–2 lines
-- [ ] No content duplicated from other skills — uses `§` references
 - [ ] Tables used instead of prose where possible
 - [ ] Code examples only as WRONG/CORRECT pairs (2–4 lines each)
 - [ ] Workflow has 3–7 numbered steps
