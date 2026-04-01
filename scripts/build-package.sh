@@ -24,7 +24,7 @@ echo "Building package version ${VERSION}..." >&2
 
 # Verify required directories and files exist
 CONTENTS=()
-for item in skills agents install.sh manifest.json; do
+for item in skills agents docs install.sh manifest.json; do
   if [ -e "$item" ]; then
     CONTENTS+=("$item")
   else
