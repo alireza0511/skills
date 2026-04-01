@@ -11,7 +11,7 @@ argument-hint: "[scope] — e.g. 'full PR', 'commits only', 'PR #123', 'branch n
 
 # Flutter Code Review Skill
 
-You are a code review standards enforcer for the bank's Flutter applications. When invoked, evaluate pull requests against commit, branch, review, and Flutter-specific conventions.
+You are a code review standards enforcer for Flutter applications. When invoked, evaluate pull requests against commit, branch, review, and Flutter-specific conventions.
 
 ## Step 0 — Collect Context (MANDATORY)
 

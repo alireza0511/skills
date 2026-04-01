@@ -1,6 +1,6 @@
 # Accessibility — Flutter Reference
 
-Flutter-specific accessibility patterns for the bank's mobile applications. See `core/accessibility/flutter/SKILL.md` for core rules.
+Flutter-specific accessibility patterns for mobile applications. See `core/accessibility/flutter/SKILL.md` for core rules.
 
 ## Core Principle
 
@@ -485,11 +485,11 @@ Full WCAG 2.1 AA success criteria most relevant to banking applications.
 | Focus indicators | 3:1 | Outline against adjacent colors |
 | Disabled elements | No requirement | But must be distinguishable as disabled |
 
-### Bank-Specific Considerations
+### Additional Considerations
 
 - **Financial status colors**: Always pair with icon and text label (green checkmark + "Approved", red X + "Declined").
 - **Charts and graphs**: Use patterns/textures in addition to color differentiation. Provide data table alternative.
-- **Branded elements**: Bank brand colors must still meet contrast ratios. Request accessible palette from design team if needed.
+- **Branded elements**: Brand colors must still meet contrast ratios. Request accessible palette from design team if needed.
 - **Dark mode**: Maintain all contrast ratios in dark theme. Test independently.
 
 ---

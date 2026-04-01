@@ -1,11 +1,11 @@
 # Platform Engineering owns root and core infrastructure
-* @bank/platform-engineering
-/core/ @bank/platform-engineering
-/agents/ @bank/platform-engineering
-/scripts/ @bank/platform-engineering
-/.github/ @bank/platform-engineering
+* @org/platform-engineering
+/core/ @org/platform-engineering
+/agents/ @org/platform-engineering
+/scripts/ @org/platform-engineering
+/.github/ @org/platform-engineering
 
 # Stack ownership
-/stacks/java/ @bank/backend-team
-/stacks/flutter/ @bank/mobile-team
-/stacks/react/ @bank/frontend-team
+/stacks/java/ @org/backend-team
+/stacks/flutter/ @org/mobile-team
+/stacks/react/ @org/frontend-team

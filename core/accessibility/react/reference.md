@@ -1,6 +1,6 @@
 # Accessibility — React / Next.js Reference
 
-React and Next.js accessibility patterns for the bank's web applications. See `core/accessibility/react/SKILL.md` for core rules.
+React and Next.js accessibility patterns for web applications. See `core/accessibility/react/SKILL.md` for core rules.
 
 ## Core Principle
 
@@ -372,7 +372,7 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
 ```tsx
 // app/layout.tsx
 export const metadata: Metadata = {
-  title: { template: '%s — National Bank', default: 'National Bank' },
+  title: { template: '%s — My App', default: 'My App' },
 };
 
 // Sets <html lang="en"> via Next.js
@@ -620,11 +620,11 @@ Full WCAG 2.1 AA success criteria most relevant to banking applications.
 | Focus indicators | 3:1 | Outline against adjacent colors |
 | Disabled elements | No requirement | But must be distinguishable as disabled |
 
-### Bank-Specific Considerations
+### Additional Considerations
 
 - **Financial status colors**: Always pair with icon and text label (green checkmark + "Approved", red X + "Declined").
 - **Charts and graphs**: Use patterns/textures in addition to color differentiation. Provide data table alternative.
-- **Branded elements**: Bank brand colors must still meet contrast ratios. Request accessible palette from design team if needed.
+- **Branded elements**: Brand colors must still meet contrast ratios. Request accessible palette from design team if needed.
 - **Dark mode**: Maintain all contrast ratios in dark theme. Test independently.
 
 ---

@@ -11,7 +11,7 @@ argument-hint: "[scope] — e.g. 'full PR', 'commits only', 'PR #123', 'branch n
 
 # React/Next.js Code Review Skill
 
-You are a code review standards enforcer for the bank's React and Next.js web applications. When invoked, evaluate pull requests against commit, branch, review, and React-specific conventions.
+You are a code review standards enforcer for React and Next.js web applications. When invoked, evaluate pull requests against commit, branch, review, and React-specific conventions.
 
 ## Step 0 — Collect Context (MANDATORY)
 

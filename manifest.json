@@ -1,7 +1,7 @@
 {
-  "name": "bank-copilot-skills",
+  "name": "copilot-skills",
   "version": "0.1.0",
-  "description": "Enterprise GitHub Copilot skills and agents for National Bank development standards",
+  "description": "Enterprise GitHub Copilot skills and agents for development standards",
   "core_skills": [
     "accessibility",
     "code-review",
@@ -19,7 +19,7 @@
   "agents": [],
   "distribution": {
     "registry": "jfrog-artifactory",
-    "repository": "bank-copilot-skills",
+    "repository": "copilot-skills",
     "type": "generic"
   }
 }

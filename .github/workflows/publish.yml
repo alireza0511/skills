@@ -42,17 +42,17 @@ jobs:
       - name: Upload to Artifactory
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          ARCHIVE="bank-copilot-skills-${VERSION}.tar.gz"
-          CHECKSUM="bank-copilot-skills-${VERSION}.tar.gz.sha256"
+          ARCHIVE="copilot-skills-${VERSION}.tar.gz"
+          CHECKSUM="copilot-skills-${VERSION}.tar.gz.sha256"
 
           jf rt upload \
             "$ARCHIVE" \
-            "bank-copilot-skills/bank-copilot-skills/${VERSION}/${ARCHIVE}" \
+            "copilot-skills/copilot-skills/${VERSION}/${ARCHIVE}" \
             --flat
 
           jf rt upload \
             "$CHECKSUM" \
-            "bank-copilot-skills/bank-copilot-skills/${VERSION}/${CHECKSUM}" \
+            "copilot-skills/copilot-skills/${VERSION}/${CHECKSUM}" \
             --flat
 
           echo "Published ${ARCHIVE} to Artifactory (version ${VERSION})"

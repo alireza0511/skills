@@ -26,7 +26,7 @@ jobs:
       - name: Get latest version from Artifactory
         id: latest
         run: |
-          LATEST=$(jf rt search "bank-copilot-skills/bank-copilot-skills/*/bank-copilot-skills-*.tar.gz" \
+          LATEST=$(jf rt search "copilot-skills/copilot-skills/*/copilot-skills-*.tar.gz" \
             --sort-by=created --sort-order=desc --limit=1 | jq -r '.[0].path' | grep -oP '\d+\.\d+\.\d+')
 
           if [ -z "$LATEST" ]; then

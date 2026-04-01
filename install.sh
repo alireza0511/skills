@@ -61,7 +61,7 @@ fi
 INSTALL_DATE="$(date +%Y-%m-%d)"
 
 echo "============================================"
-echo " Bank Copilot Skills Installer v${VERSION}"
+echo " Copilot Skills Installer v${VERSION}"
 echo "============================================"
 echo ""
 echo "Target:  $TARGET"
@@ -175,7 +175,7 @@ cat > "$SKILLS_DEST/MANIFEST.md" <<EOF
 
 - **Version:** ${VERSION}
 - **Installed on:** ${INSTALL_DATE}
-- **Source:** bank-copilot-skills
+- **Source:** copilot-skills
 
 ## Installed Stacks
 

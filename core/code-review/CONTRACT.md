@@ -41,7 +41,7 @@
 - Follow Effective Dart style guide
 - Widget tests required for all new UI components
 - Golden tests for complex visual components
-- `flutter_lints` package with custom bank lint rules
+- `flutter_lints` package with custom custom lint rules
 - Verify `pubspec.lock` changes are intentional
 
 ### React

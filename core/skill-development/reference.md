@@ -12,7 +12,7 @@ A contract defines the shared identity and rules for a multi-platform skill.
 ## Identity
 
 - **Name:** error-handling
-- **One-liner:** Error taxonomy, user-facing messages, retry/backoff, and circuit breaker patterns for bank services
+- **One-liner:** Error taxonomy, user-facing messages, retry/backoff, and circuit breaker patterns for services
 - **Platforms:** flutter, react
 - **Target type:** both
 
@@ -23,7 +23,7 @@ A contract defines the shared identity and rules for a multi-platform skill.
 ## Hard Rules
 
 - Never expose internal errors to users — return safe error with correlation ID
-- Always use error codes from the bank taxonomy
+- Always use error codes from the error taxonomy
 - All network calls must use exponential backoff retry (max 3 attempts)
 - Circuit breaker on all downstream dependencies (open after 5 failures, half-open after 30s)
 
@@ -62,7 +62,7 @@ A contract defines the shared identity and rules for a multi-platform skill.
 - [ ] No internal details in user-facing errors
 - [ ] Retry with backoff on all network calls
 - [ ] Circuit breaker on all downstream dependencies
-- [ ] Error codes from bank taxonomy
+- [ ] Error codes from error taxonomy
 - [ ] traceId in every error response
 - [ ] Tests written
 ```
@@ -79,7 +79,7 @@ argument-hint: "[scope] — e.g. 'full app', 'payment service', 'PR changes'"
 
 # Flutter Error Handling
 
-You are an error handling expert for the bank's Flutter applications. When invoked, audit and fix error handling patterns against bank standards.
+You are an error handling expert for the Flutter applications. When invoked, audit and fix error handling patterns against organization standards.
 
 ## Step 0 — Collect Context (MANDATORY)
 

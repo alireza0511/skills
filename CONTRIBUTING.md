@@ -1,6 +1,6 @@
-# Contributing to Bank Copilot Skills
+# Contributing to Copilot Skills
 
-Thank you for your interest in contributing to the National Bank Copilot skills repository. This document outlines the ownership model, PR workflow, authoring guidelines, and CI requirements.
+Thank you for your interest in contributing to the Copilot skills repository. This document outlines the ownership model, PR workflow, authoring guidelines, and CI requirements.
 
 ## Federated Ownership Model
 
@@ -8,10 +8,10 @@ This repository follows a federated ownership model. Each area has a designated 
 
 | Path | Owner |
 |---|---|
-| `/` (root), `core/`, `agents/`, `scripts/`, `.github/` | **Platform Engineering** (`@bank/platform-engineering`) |
-| `stacks/flutter/` | **Mobile Team** (`@bank/mobile-team`) |
-| `stacks/java/` | **Backend Team** (`@bank/backend-team`) |
-| `stacks/react/` | **Frontend Team** (`@bank/frontend-team`) |
+| `/` (root), `core/`, `agents/`, `scripts/`, `.github/` | **Platform Engineering** (`@org/platform-engineering`) |
+| `stacks/flutter/` | **Mobile Team** (`@org/mobile-team`) |
+| `stacks/java/` | **Backend Team** (`@org/backend-team`) |
+| `stacks/react/` | **Frontend Team** (`@org/frontend-team`) |
 
 Ownership is enforced via the `CODEOWNERS` file at the repository root.
 
@@ -21,7 +21,7 @@ Ownership is enforced via the `CODEOWNERS` file at the repository root.
 2. **Open a Pull Request** targeting `main`.
 3. **Required reviewers** are automatically assigned via CODEOWNERS:
    - **Platform Engineering** is required on every PR (they own root).
-   - The **domain owner** for the affected path is also required (e.g., `@bank/mobile-team` for changes under `stacks/flutter/`).
+   - The **domain owner** for the affected path is also required (e.g., `@org/mobile-team` for changes under `stacks/flutter/`).
 4. **CI must pass** -- all checks described below must be green before merge.
 5. **Merge** using squash-merge to keep the history clean.
 

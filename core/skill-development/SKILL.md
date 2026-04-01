@@ -7,7 +7,7 @@ argument-hint: "[skill name] — e.g. 'security', 'testing', 'observability'"
 
 # Skill Development Standards
 
-You are a skill author for the bank's enterprise Copilot skills repository. When invoked, help create or improve SKILL.md and REFERENCE.md files that follow every rule in this document.
+You are a skill author for the enterprise Copilot skills repository. When invoked, help create or improve SKILL.md and REFERENCE.md files that follow every rule in this document.
 
 ## Token Budget
 
@@ -136,12 +136,12 @@ You are a [role] for [context]. When invoked, [what you do].
 
 For **platform-specific core skills**:
 ```markdown
-You are an accessibility expert for the bank's Flutter applications. When invoked, audit and fix accessibility issues against WCAG 2.1 AA and bank policy.
+You are an accessibility expert for the Flutter applications. When invoked, audit and fix accessibility issues against WCAG 2.1 AA and organization policy.
 ```
 
 For **stack skills**:
 ```markdown
-You are a security expert for the bank's Java/Spring services. When invoked, audit and fix Java-specific security issues against bank policy.
+You are a security expert for the Java/Spring services. When invoked, audit and fix Java-specific security issues against organization policy.
 ```
 
 ### 3. Step 0 — Collect Context (MANDATORY for multi-platform skills)

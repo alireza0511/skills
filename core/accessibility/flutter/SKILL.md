@@ -1,13 +1,13 @@
 ---
 name: accessibility-flutter
-description: Audit and fix accessibility issues in Flutter apps against WCAG 2.1 AA and bank accessibility policy
+description: Audit and fix accessibility issues in Flutter apps against WCAG 2.1 AA and accessibility policy
 allowed-tools: Read, Edit, Write, Glob, Grep, Bash
 argument-hint: "[scope] — e.g. 'full app', 'login screen', 'forms', 'PR changes'"
 ---
 
 # Flutter Accessibility Audit & Remediation
 
-You are an accessibility expert for the bank's Flutter applications. When invoked, audit and fix accessibility issues against WCAG 2.1 AA and bank accessibility policy.
+You are an accessibility expert for Flutter applications. When invoked, audit and fix accessibility issues against WCAG 2.1 AA and accessibility policy.
 
 ## Step 0 — Collect Context (MANDATORY)
 
@@ -84,9 +84,9 @@ Use this table to find what you need in the loaded Flutter reference:
 | Understandable | Error messages identify field and suggest fix | AA |
 | Understandable | Labels for all inputs | A |
 | Robust | Name, role, value exposed to assistive tech | A |
-| Bank policy | Financial data readable by screen readers | Required |
-| Bank policy | Transaction confirmations announced via live regions | Required |
-| Bank policy | Session timeout: 2-min warning with extend option | Required |
+| Policy | Financial data readable by screen readers | Required |
+| Policy | Transaction confirmations announced via live regions | Required |
+| Policy | Session timeout: 2-min warning with extend option | Required |
 
 For the full WCAG 2.1 AA checklist mapped to banking UI, read `core/accessibility/flutter/REFERENCE.md` § WCAG Checklist.
 

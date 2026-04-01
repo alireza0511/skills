@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Build a distributable tar.gz package of bank-copilot-skills.
+# Build a distributable tar.gz package of copilot-skills.
 # Reads version from manifest.json, packages core/, stacks/, agents/,
 # install.sh, and manifest.json, then computes a sha256 checksum.
 
@@ -18,7 +18,7 @@ if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
   exit 1
 fi
 
-ARCHIVE_NAME="bank-copilot-skills-${VERSION}.tar.gz"
+ARCHIVE_NAME="copilot-skills-${VERSION}.tar.gz"
 
 echo "Building package version ${VERSION}..." >&2
 

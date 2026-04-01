@@ -3,7 +3,7 @@
 ## Identity
 
 - **Name:** accessibility
-- **One-liner:** Audit and fix accessibility issues against WCAG 2.1 AA and bank accessibility policy
+- **One-liner:** Audit and fix accessibility issues against WCAG 2.1 AA and accessibility policy
 - **Platforms:** flutter, react, ios, android
 - **Target type:** both
 
@@ -33,9 +33,9 @@
 - Error messages identify the field and suggest a fix
 - All form inputs have labels
 - Name, role, value exposed to assistive tech
-- Bank policy: financial data must be screen-reader readable
-- Bank policy: transaction confirmations announced via live regions
-- Bank policy: session timeout 2-min warning with extend option
+- Policy: financial data must be screen-reader readable
+- Policy: transaction confirmations announced via live regions
+- Policy: session timeout 2-min warning with extend option
 
 ## Platform-Specific Notes
 
