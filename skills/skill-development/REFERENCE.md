@@ -241,7 +241,7 @@ Examples:
 > Logging rules from `skills/frontend/observability/flutter/SKILL.md` § Hard Rules apply to error logging.
 ```
 
-### Stack skill referencing a core platform skill
+### Backend skill referencing a frontend skill
 
 ```markdown
 > All rules from `skills/frontend/security/flutter/SKILL.md` apply here. This skill adds Dart-specific implementation guidance.
@@ -281,7 +281,7 @@ The following CI checks run on every PR that modifies skills:
 | Shared SKILL.md at skill root | Skill not platform-specific, asks unnecessary questions | Create platform-specific SKILL.md in each subdirectory |
 | Lowercase reference.md | Inconsistent naming | Use REFERENCE.md (uppercase) |
 | Duplicating rules across platform SKILL.md files | Bloats token usage, diverges over time | Keep shared rules in CONTRACT.md, platform-specific rules in SKILL.md |
-| Writing Java examples in a core skill | Core skill unusable for other teams | Platform-specific examples go in platform REFERENCE.md |
+| Writing Java examples in a frontend skill | Frontend skill unusable for other teams | Platform-specific examples go in platform REFERENCE.md |
 | Putting full class files in SKILL.md | 100+ lines consumed on every invocation | Move to REFERENCE.md, show 3–5 key lines in SKILL.md |
 | Missing CONTRACT.md for multi-platform skill | No shared contract definition | Always create CONTRACT.md at skill root |
 | Prose-heavy SKILL.md | Wastes tokens, hard to scan | Convert to tables, delete filler words |

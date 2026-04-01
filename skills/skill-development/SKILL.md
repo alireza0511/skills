@@ -136,15 +136,15 @@ argument-hint: "[what the user passes] — e.g. 'widget name', 'service name'"
 You are a [role] for [context]. When invoked, [what you do].
 ```
 
-For **platform-specific core skills**:
+Scope the role to the platform specified in the CONTRACT.md:
 ```markdown
-You are an accessibility expert for the Flutter applications. When invoked, audit and fix accessibility issues against WCAG 2.1 AA and organization policy.
+You are a [role] for [platform from CONTRACT.md] applications. When invoked, [what you do].
 ```
 
-For **stack skills**:
-```markdown
-You are a security expert for the Java/Spring services. When invoked, audit and fix Java-specific security issues against organization policy.
-```
+Examples:
+- `You are an accessibility expert for Flutter applications.` (from a contract with `Platforms: flutter`)
+- `You are a code review enforcer for React and Next.js web applications.` (from a contract with `Platforms: react`)
+- `You are a security expert for Java/Spring services.` (from a contract with `Platforms: java`)
 
 ### 3. Step 0 — Collect Context (MANDATORY for multi-platform skills)
 
