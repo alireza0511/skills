@@ -1,5 +1,6 @@
 ---
 name: skill-development
+version: 1.0.0
 description: Standards for writing SKILL.md, REFERENCE.md, and CONTRACT.md files — structure, token budget, compression rules, and quality guidelines for enterprise skill authoring
 allowed-tools: Read, Edit, Write, Glob, Grep, Bash
 argument-hint: "[skill name] — e.g. 'security', 'testing', 'observability'"
@@ -117,6 +118,7 @@ Every SKILL.md must have these sections in order:
 ```yaml
 ---
 name: kebab-case-name
+version: 1.0.0
 description: One sentence — used for skill discovery, be specific and searchable
 allowed-tools: Read, Edit, Write, Glob, Grep, Bash
 argument-hint: "[what the user passes] — e.g. 'widget name', 'service name'"
@@ -126,6 +128,7 @@ argument-hint: "[what the user passes] — e.g. 'widget name', 'service name'"
 | Field | Required | Rules |
 |-------|----------|-------|
 | `name` | Yes | Kebab-case, must match directory path context |
+| `version` | Yes | Semantic version (e.g., `1.0.0`). Must match CONTRACT.md version if one exists |
 | `description` | Yes | Search-optimized — include key terms users would type |
 | `allowed-tools` | Yes | Only tools the skill needs. Don't grant tools it doesn't use |
 | `argument-hint` | No | Format + 1–2 examples. Omit if skill takes no arguments |
@@ -309,7 +312,7 @@ When given a CONTRACT.md (e.g., `generate from skills/<category>/<name>/CONTRACT
 - [ ] Core reference content merged into each platform REFERENCE.md (no shared reference file)
 
 ### All skills
-- [ ] Frontmatter complete — `name`, `description`, `allowed-tools` present
+- [ ] Frontmatter complete — `name`, `version`, `description`, `allowed-tools` present
 - [ ] Role statement is 1–2 lines
 - [ ] Tables used instead of prose where possible
 - [ ] Code examples only as WRONG/CORRECT pairs (2–4 lines each)

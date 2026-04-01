@@ -1,5 +1,6 @@
 ---
 name: code-review-flutter
+version: 1.0.0
 description: "PR conventions, conventional commits, branch strategy, and Flutter-specific review checklist for services"
 allowed-tools:
   - Read

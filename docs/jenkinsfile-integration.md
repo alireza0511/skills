@@ -14,26 +14,39 @@ pipeline {
         stage('Update Copilot Skills') {
             steps {
                 sh '''
-                    # Clone the skills repo
                     SKILLS_REPO="https://github.com/alireza0511/skills.git"
                     SKILLS_DIR="${WORKSPACE}/.github/skills"
                     TEMP_DIR=$(mktemp -d)
 
                     git clone --depth 1 --branch main "${SKILLS_REPO}" "${TEMP_DIR}"
 
+                    # Compare versions — skip update if already current
+                    REMOTE_VERSION=$(jq -r '.version' "${TEMP_DIR}/manifest.json")
+                    LOCAL_VERSION=""
+                    if [ -f "${SKILLS_DIR}/MANIFEST.md" ]; then
+                        LOCAL_VERSION=$(grep -oP '(?<=\*\*Version:\*\* ).*' "${SKILLS_DIR}/MANIFEST.md" || true)
+                    fi
+
+                    if [ "${LOCAL_VERSION}" = "${REMOTE_VERSION}" ]; then
+                        echo "Skills already at version ${REMOTE_VERSION} — skipping update"
+                        rm -rf "${TEMP_DIR}"
+                        exit 0
+                    fi
+
+                    echo "Updating skills: ${LOCAL_VERSION:-none} → ${REMOTE_VERSION}"
+
                     # Copy skills into the workspace
                     mkdir -p "${SKILLS_DIR}"
                     cp -R "${TEMP_DIR}/skills/"* "${SKILLS_DIR}/"
 
                     # Record version info
-                    VERSION=$(jq -r '.version' "${TEMP_DIR}/manifest.json")
                     COMMIT=$(git -C "${TEMP_DIR}" rev-parse --short HEAD)
                     DATE=$(date +%Y-%m-%d)
 
                     cat > "${SKILLS_DIR}/MANIFEST.md" <<EOF
 # Installed Copilot Skills
 
-- **Version:** ${VERSION}
+- **Version:** ${REMOTE_VERSION}
 - **Commit:** ${COMMIT}
 - **Installed on:** ${DATE}
 - **Source:** https://github.com/alireza0511/skills
@@ -45,7 +58,7 @@ EOF
                     # Clean up
                     rm -rf "${TEMP_DIR}"
 
-                    echo "Skills updated to version ${VERSION} (${COMMIT})"
+                    echo "Skills updated to version ${REMOTE_VERSION} (${COMMIT})"
                 '''
             }
         }

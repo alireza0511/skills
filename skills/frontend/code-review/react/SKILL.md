@@ -1,5 +1,6 @@
 ---
 name: code-review-react
+version: 1.0.0
 description: "PR conventions, conventional commits, branch strategy, and React/Next.js-specific review checklist for services"
 allowed-tools:
   - Read

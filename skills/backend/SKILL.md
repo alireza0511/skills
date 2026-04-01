@@ -1,5 +1,6 @@
 ---
 name: backend
+version: 1.0.0
 description: Placeholder for backend development skills — API design, data access, service patterns
 allowed-tools: Read, Grep, Glob
 ---

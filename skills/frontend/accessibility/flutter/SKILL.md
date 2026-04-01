@@ -1,5 +1,6 @@
 ---
 name: accessibility-flutter
+version: 1.0.0
 description: Audit and fix accessibility issues in Flutter apps against WCAG 2.1 AA and accessibility policy
 allowed-tools: Read, Edit, Write, Glob, Grep, Bash
 argument-hint: "[scope] — e.g. 'full app', 'login screen', 'forms', 'PR changes'"

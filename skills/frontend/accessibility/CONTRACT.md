@@ -3,6 +3,7 @@
 ## Identity
 
 - **Name:** accessibility
+- **Version:** 1.0.0
 - **One-liner:** Audit and fix accessibility issues against WCAG 2.1 AA and accessibility policy
 - **framework:** flutter, react
 - **Target type:** ios, android, web browser

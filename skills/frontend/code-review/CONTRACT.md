@@ -3,6 +3,7 @@
 ## Identity
 
 - **Name:** code-review
+- **Version:** 1.0.0
 - **One-liner:** PR conventions, conventional commits, branch strategy, review checklist for services
 - **Platforms:** flutter, react
 - **Target type:** both
