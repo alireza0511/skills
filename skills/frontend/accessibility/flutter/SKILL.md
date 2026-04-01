@@ -22,8 +22,8 @@ Before any work, you MUST ask these questions. Do not guess. Do not infer. Do no
 ### After Both Answers — Load References
 
 Read these files before proceeding:
-- `core/accessibility/flutter/REFERENCE.md` — Flutter-specific patterns and code examples
-- `core/accessibility/flutter/REFERENCE.md` — Core WCAG checklist and banking requirements
+- `skills/frontend/accessibility/flutter/REFERENCE.md` — Flutter-specific patterns and code examples
+- `skills/frontend/accessibility/flutter/REFERENCE.md` — Core WCAG checklist and banking requirements
 
 **Do NOT proceed to Step 1 until references are loaded.**
 
