@@ -249,6 +249,7 @@ Shared content (WCAG checklist, commit format, branch strategy, etc.) is merged 
 | JSON + code duplicating same content | Show once in canonical form |
 | Shared reference.md at skill root | Merge core content into each platform's REFERENCE.md |
 | Lowercase reference.md | Use REFERENCE.md (uppercase) |
+| Cross-platform concepts in platform REFERENCE.md | Each platform's REFERENCE.md must only use that platform's native APIs. Never put web concepts (ARIA, HTML semantics) in a mobile REFERENCE.md or mobile concepts (Semantics widget, TalkBack) in a web REFERENCE.md. When merging core reference content, translate patterns to the target platform's equivalent. |
 
 ## Workflow — Generating a Skill from a Contract
 
