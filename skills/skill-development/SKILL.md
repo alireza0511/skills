@@ -26,18 +26,20 @@ Skills are loaded into the LLM context window on every invocation. Every line co
 
 Skills use a platform-specific structure. Each platform gets its own SKILL.md and REFERENCE.md. A CONTRACT.md at the skill root defines the shared contract.
 
-### Frontend skills (multi-platform)
+### Category-based skills (multi-platform)
 
 ```
-skills/frontend/<name>/
+skills/<category>/<name>/
 ├── CONTRACT.md                  # Shared contract — identity, rules, standards
-├── flutter/
-│   ├── SKILL.md                 # Flutter-specific skill (loaded into context)
-│   └── REFERENCE.md             # Flutter patterns + core reference content
-└── react/
-    ├── SKILL.md                 # React-specific skill (loaded into context)
-    └── REFERENCE.md             # React patterns + core reference content
+├── <platform>/
+│   ├── SKILL.md                 # Platform-specific skill (loaded into context)
+│   └── REFERENCE.md             # Platform patterns + core reference content
+└── <platform>/
+    ├── SKILL.md
+    └── REFERENCE.md
 ```
+
+Categories: `frontend/` (flutter, react), `backend/` (java, kotlin, go), etc.
 
 ### Standalone skills (single concern)
 
@@ -66,7 +68,7 @@ skills/<name>/
 ### How SKILL.md references it
 
 ```markdown
-For full code examples, read `skills/frontend/<name>/flutter/REFERENCE.md` § Section Name.
+For full code examples, read `skills/<category>/<name>/<platform>/REFERENCE.md` § Section Name.
 ```
 
 The agent reads REFERENCE.md only when it needs that section — not on every invocation.
@@ -159,7 +161,7 @@ Before any work, you MUST ask this question. Do not guess. Do not proceed until 
 ### After Answer — Load Reference
 
 Read this file before proceeding:
-- `skills/frontend/<name>/<platform>/REFERENCE.md`
+- `skills/<category>/<name>/<platform>/REFERENCE.md`
 ```
 
 ### 4. Hard Rules
@@ -171,7 +173,7 @@ Non-negotiable constraints. Each rule:
 Do NOT duplicate rules from another skill. Reference instead:
 
 ```markdown
-> All security rules from `skills/frontend/security/flutter/SKILL.md` § Hard Rules apply here.
+> All security rules from `skills/<category>/security/<platform>/SKILL.md` § Hard Rules apply here.
 ```
 
 ### 5. Core Content
@@ -211,7 +213,7 @@ Show the pattern once. Use a table for variant differences.
 If content exists in another skill, point to it:
 
 ```markdown
-See `skills/frontend/testing/flutter/SKILL.md` § Checklist for the test coverage policy.
+See `skills/<category>/testing/<platform>/SKILL.md` § Checklist for the test coverage policy.
 ```
 
 Never copy-paste sections between skills.
@@ -253,10 +255,10 @@ Shared content (WCAG checklist, commit format, branch strategy, etc.) is merged 
 
 ### Generation Steps
 
-When given a CONTRACT.md (e.g., `generate from skills/frontend/accessibility/CONTRACT.md`):
+When given a CONTRACT.md (e.g., `generate from skills/<category>/<name>/CONTRACT.md`):
 
 1. **Read the contract** — load the CONTRACT.md file
-2. **Create directories** — `skills/frontend/<name>/flutter/` and `skills/frontend/<name>/react/` (or whichever platforms are listed)
+2. **Create directories** — `skills/<category>/<name>/<platform>/` for each platform listed in the contract
 3. **Generate platform SKILL.md files** from the contract:
    - Build frontmatter with platform-specific name (e.g., `accessibility-flutter`)
    - Write role statement scoped to the platform
@@ -288,7 +290,7 @@ When given a CONTRACT.md (e.g., `generate from skills/frontend/accessibility/CON
 
 1. **Identify scope** — one skill = one concern. Two unrelated domains -> split
 2. **Check overlap** — read existing skills. Reference shared content, don't duplicate
-3. **Determine platforms** — create a subdirectory per platform under `skills/frontend/<name>/`
+3. **Determine category and platforms** — create a subdirectory per platform under `skills/<category>/<name>/`
 4. **Write CONTRACT.md** — define shared identity, rules, standards at skill root
 5. **Write platform SKILL.md files** — frontmatter, role, Step 0, hard rules, core content, workflow, checklist
 6. **Write platform REFERENCE.md files** — full examples, templates, core reference merged in

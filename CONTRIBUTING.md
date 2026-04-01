@@ -10,6 +10,7 @@ This repository follows a federated ownership model. Each area has a designated 
 |---|---|
 | `/` (root), `skills/`, `agents/`, `scripts/`, `.github/` | **Platform Engineering** (`@org/platform-engineering`) |
 | `skills/frontend/` | **Frontend Team** (`@org/frontend-team`) |
+| `skills/backend/` | **Backend Team** (`@org/backend-team`) |
 
 Ownership is enforced via the `CODEOWNERS` file at the repository root.
 
@@ -30,13 +31,15 @@ Skills follow a platform-specific structure. Multi-platform core skills have a `
 ```
 skills/<category>/<name>/
 ├── CONTRACT.md
-├── flutter/
+├── <platform>/
 │   ├── SKILL.md
 │   └── REFERENCE.md
-└── react/
+└── <platform>/
     ├── SKILL.md
     └── REFERENCE.md
 ```
+
+Categories: `frontend/` (flutter, react), `backend/` (java, kotlin, go), etc.
 
 For comprehensive authoring instructions, templates, and examples, refer to the **`skills/skill-development/`** meta-skill.
 

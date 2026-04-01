@@ -199,18 +199,25 @@ class Failure<T> extends Result<T> {
 
 ## Naming Convention for Skill Directories
 
-### Frontend skills (multi-platform)
+### Category-based skills (multi-platform)
 
 ```
-skills/frontend/<topic>/
+skills/<category>/<topic>/
 ├── CONTRACT.md
-├── flutter/
+├── <platform>/
 │   ├── SKILL.md
 │   └── REFERENCE.md
-└── react/
+└── <platform>/
     ├── SKILL.md
     └── REFERENCE.md
 ```
+
+Categories and their platforms:
+
+| Category | Platforms | Example |
+|----------|----------|---------|
+| `frontend/` | flutter, react | `skills/frontend/accessibility/flutter/` |
+| `backend/` | java, kotlin, go | `skills/backend/security/java/` |
 
 Topic names are singular, kebab-case: `security`, `testing`, `api-design`, `error-handling`, `accessibility`, `code-review`.
 
@@ -224,7 +231,7 @@ skills/<topic>/
 
 Examples:
 - `skills/skill-development/`
-- `skills/frontend/accessibility/`
+- `skills/backend/` (placeholder)
 
 ## Cross-Referencing Between Skills
 

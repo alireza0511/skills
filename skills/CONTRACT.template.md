@@ -3,19 +3,21 @@
 > Fill in the bullet points below. Keep it brief — just what matters.
 > Then invoke the `skill-development` skill to generate the full SKILL.md and reference files from this contract.
 >
-> Usage: `@skill-development generate from skills/frontend/<name>/CONTRACT.md`
+> Usage: `@skill-development generate from skills/<category>/<name>/CONTRACT.md`
 >
 > Output structure:
 > ```
-> skills/frontend/<name>/
+> skills/<category>/<name>/
 > ├── CONTRACT.md
-> ├── flutter/
+> ├── <platform>/
 > │   ├── SKILL.md
 > │   └── REFERENCE.md
-> └── react/
+> └── <platform>/
 >     ├── SKILL.md
 >     └── REFERENCE.md
 > ```
+>
+> Categories: `frontend/` (flutter, react), `backend/` (java, kotlin, go), etc.
 
 ## Identity
 

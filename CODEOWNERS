@@ -7,3 +7,6 @@
 
 # Frontend ownership
 /skills/frontend/ @org/frontend-team
+
+# Backend ownership
+/skills/backend/ @org/backend-team
