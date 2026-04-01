@@ -533,8 +533,6 @@ form label="Fund Transfer"
 
 | Platform | Primary SR | Secondary SR |
 |---|---|---|
-| Web (Windows) | NVDA | JAWS |
-| Web (macOS) | VoiceOver | — |
 | iOS | VoiceOver | — |
 | Android | TalkBack | — |
 
