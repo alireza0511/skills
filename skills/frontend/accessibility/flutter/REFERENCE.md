@@ -408,34 +408,31 @@ Full WCAG 2.1 AA success criteria most relevant to applications.
 
 ---
 
-## ARIA Patterns
+## Semantics Patterns
 
 ### Common UI Patterns
 
-| Component | ARIA Pattern | Key Attributes |
+| Component | Flutter Semantics | Implementation |
 |---|---|---|
-| Account balance | Live region | `aria-live="polite"` on balance container |
-| Transaction status | Status message | `role="status"` with descriptive text |
-| Transfer confirmation | Alert dialog | `role="alertdialog"`, `aria-describedby` |
-| Account selector | Combobox | `role="combobox"`, `aria-expanded`, `aria-activedescendant` |
-| Transaction table | Data table | `role="table"`, proper `th` scope, `aria-sort` for sortable columns |
-| Navigation menu | Navigation | `role="navigation"`, `aria-label` to distinguish multiple navs |
-| Loading indicator | Status | `aria-busy="true"` on container, `role="status"` with "Loading..." text |
-| Modal (OTP entry) | Dialog | `role="dialog"`, `aria-modal="true"`, trap focus, return focus on close |
-| Tab panel (account views) | Tablist | `role="tablist"`, `role="tab"`, `aria-selected`, `role="tabpanel"` |
-| Error summary | Alert | `role="alert"`, appears at top of form, links to each error field |
-| Session warning | Alert dialog | `role="alertdialog"`, auto-focus, extend/logout options |
+| Live data (balance, status) | `Semantics(liveRegion: true)` | Wrap in live region for auto-announcement |
+| Status message | `Semantics(liveRegion: true)` | Use with `Text` for success/error messages |
+| Confirmation dialog | `AlertDialog` | Built-in semantics — no custom Semantics needed |
+| Selector / dropdown | `DropdownButton` | Built-in semantics — announces selected value |
+| Data list | `ListView` + `MergeSemantics` | Group related content per row |
+| Navigation | `NavigationBar` / `Drawer` | Built-in semantics — use `semanticLabel` on icons |
+| Loading indicator | `CircularProgressIndicator` | Add `Semantics(label: 'Loading')` wrapper |
+| Modal / bottom sheet | `showModalBottomSheet` | Built-in focus trapping |
+| Tab view | `TabBar` + `TabBarView` | Built-in semantics — announces tab selection |
+| Error summary | `Semantics(liveRegion: true)` | Announce error count immediately |
 
 ### Live Region Usage
 
-| Scenario | `aria-live` Value | Rationale |
+| Scenario | Implementation | Rationale |
 |---|---|---|
-| Balance update | `polite` | Not urgent — wait for user idle |
-| Transaction success | `polite` | Informational confirmation |
-| Transaction failure | `assertive` | User must know immediately |
-| Session expiry warning | `assertive` | Time-sensitive action required |
-| Search results count | `polite` | Supplementary information |
-| Rate/price update | `off` (manual announce) | Too frequent — announce on demand |
+| Data update | `Semantics(liveRegion: true, child: Text(value))` | Auto-announces changes to screen reader |
+| Success message | `Semantics(liveRegion: true, child: Text('Done'))` | User confirmation |
+| Error message | `Semantics(liveRegion: true, child: Text(error))` | User must know immediately |
+| Search results | `Semantics(liveRegion: true, child: Text('$count results'))` | Supplementary info |
 
 ---
 
