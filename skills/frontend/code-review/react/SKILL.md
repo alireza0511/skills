@@ -1,6 +1,6 @@
 ---
 name: code-review-react
-description: "PR conventions, conventional commits, branch strategy, and React/Next.js-specific review checklist for banking services"
+description: "PR conventions, conventional commits, branch strategy, and React/Next.js-specific review checklist for services"
 allowed-tools:
   - Read
   - Grep

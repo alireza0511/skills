@@ -251,7 +251,7 @@ final highContrast = MediaQuery.of(context).highContrast;
 
 ## Forms
 
-Accessible form patterns for banking workflows. Use Flutter's built-in form widgets — they provide correct semantic roles and validation announcements automatically.
+Accessible form patterns for common workflows. Use Flutter's built-in form widgets — they provide correct semantic roles and validation announcements automatically.
 
 ```dart
 // Accessible transfer form
@@ -382,33 +382,33 @@ testWidgets('widget meets accessibility guidelines', (tester) async {
 
 ## WCAG Checklist
 
-Full WCAG 2.1 AA success criteria most relevant to banking applications.
+Full WCAG 2.1 AA success criteria most relevant to applications.
 
 ### Perceivable
 
-| Criterion | ID | Requirement | Banking Context |
+| Criterion | ID | Requirement | Context |
 |---|---|---|---|
 | Non-text Content | 1.1.1 | Text alternative for all non-text content | Charts, logos, status icons, CAPTCHA alternatives |
 | Captions | 1.2.2 | Captions for prerecorded audio/video | Tutorial videos, customer support recordings |
 | Info and Relationships | 1.3.1 | Structure conveyed programmatically | Account tables, transaction lists, form groups |
 | Meaningful Sequence | 1.3.2 | Reading order matches visual order | Multi-column layouts, dashboard widgets |
 | Sensory Characteristics | 1.3.3 | Instructions not based solely on shape, size, location, sound | "Click the green button" is not sufficient |
-| Orientation | 1.3.4 | Content not restricted to single orientation | Mobile banking must work in both orientations |
+| Orientation | 1.3.4 | Content not restricted to single orientation | App must work in both orientations |
 | Input Purpose | 1.3.5 | Autocomplete attributes on common fields | Name, email, phone, address, card number |
 | Use of Color | 1.4.1 | Color not sole means of conveying info | Transaction status, account health indicators |
 | Contrast (Minimum) | 1.4.3 | 4.5:1 for normal text, 3:1 for large text | All text including balances, rates, disclaimers |
 | Resize Text | 1.4.4 | Text resizable to 200% without loss | All pages, especially transaction tables |
-| Reflow | 1.4.10 | No horizontal scroll at 320px width | Mobile-first banking layouts |
+| Reflow | 1.4.10 | No horizontal scroll at 320px width | Mobile-first layouts |
 | Non-text Contrast | 1.4.11 | 3:1 for UI components and graphical objects | Buttons, input borders, chart elements |
 | Text Spacing | 1.4.12 | Content readable with increased spacing | Line height 1.5x, letter spacing 0.12em |
 
 ### Operable
 
-| Criterion | ID | Requirement | Banking Context |
+| Criterion | ID | Requirement | Context |
 |---|---|---|---|
 | Keyboard | 2.1.1 | All functionality via keyboard | Transfers, bill pay, account navigation |
 | No Keyboard Trap | 2.1.2 | Focus can always be moved away | Modal dialogs, dropdown menus, date pickers |
-| Timing Adjustable | 2.2.1 | Users can extend time limits | Session timeout: 2-min warning, extend option |
+| Timing Adjustable | 2.2.1 | Users can extend time limits | Time-limited actions must warn before expiry |
 | Pause, Stop, Hide | 2.2.2 | User can control moving content | Auto-rotating promotions, live rate tickers |
 | Skip Links | 2.4.1 | Bypass repeated content | "Skip to main content" on every page |
 | Page Titled | 2.4.2 | Descriptive page titles | "Transfer Funds — MyBank" not just "MyBank" |
@@ -420,7 +420,7 @@ Full WCAG 2.1 AA success criteria most relevant to banking applications.
 
 ### Understandable
 
-| Criterion | ID | Requirement | Banking Context |
+| Criterion | ID | Requirement | Context |
 |---|---|---|---|
 | Language of Page | 3.1.1 | Default language declared | lang attribute on root element |
 | Language of Parts | 3.1.2 | Language changes marked | Multilingual terms and conditions |
@@ -434,7 +434,7 @@ Full WCAG 2.1 AA success criteria most relevant to banking applications.
 
 ### Robust
 
-| Criterion | ID | Requirement | Banking Context |
+| Criterion | ID | Requirement | Context |
 |---|---|---|---|
 | Parsing | 4.1.1 | Valid markup | No duplicate IDs, proper nesting |
 | Name, Role, Value | 4.1.2 | All components expose name, role, value | Custom widgets must declare semantics |
@@ -444,7 +444,7 @@ Full WCAG 2.1 AA success criteria most relevant to banking applications.
 
 ## ARIA Patterns
 
-### Common Banking UI Patterns
+### Common UI Patterns
 
 | Component | ARIA Pattern | Key Attributes |
 |---|---|---|
@@ -572,12 +572,12 @@ form label="Fund Transfer"
 | iOS | VoiceOver | — |
 | Android | TalkBack | — |
 
-### Common Banking A11y Defects
+### Common A11y Defects
 
 | Defect | Impact | Fix |
 |---|---|---|
 | Balance not in live region | Screen reader users miss updates | Add live region with polite priority |
 | Transaction table missing headers | Data is meaningless without context | Add proper header cells with scope |
 | OTP modal doesn't trap focus | User tabs behind modal | Implement focus trap |
-| Session timeout without warning | User loses work unexpectedly | 2-min warning dialog with extend option |
+| Secure data revealed without warning | User unaware sensitive info will be shown | Inform user before hide/show exposes sensitive data |
 | PDF statements inaccessible | Cannot read with assistive tech | Generate tagged PDFs or provide HTML alternative |

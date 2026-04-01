@@ -19,17 +19,14 @@ Before any work, you MUST ask these questions. Do not guess. Do not infer. Do no
 **Q2: Audit scope**
 > "What should I audit: **full app**, **specific screen/page**, **specific component**, or **PR/diff changes only**?"
 
-### After Both Answers — Load References
+### After Both Answers — Load Reference
 
-Read these files before proceeding:
-- `skills/frontend/accessibility/flutter/REFERENCE.md` — Flutter-specific patterns and code examples
-- `skills/frontend/accessibility/flutter/REFERENCE.md` — Core WCAG checklist and banking requirements
+Read this file before proceeding:
+- `skills/frontend/accessibility/flutter/REFERENCE.md` — Flutter-specific patterns, code examples, and core WCAG checklist
 
-**Do NOT proceed to Step 1 until references are loaded.**
+**Do NOT proceed to Step 1 until reference is loaded.**
 
 ## Section Navigation Guide
-
-Use this table to find what you need in the loaded Flutter reference:
 
 | Need | Section heading to read |
 |------|-------------------------|
@@ -38,7 +35,7 @@ Use this table to find what you need in the loaded Flutter reference:
 | Common mistakes to flag | `## Anti-Patterns` |
 | Screen reader / assistive tech behavior | `## Accessibility Services` |
 | Minimum tap target sizes | `## Touch Targets` |
-| Labeling conventions for banking UI | `## Semantic Label Patterns` |
+| Labeling conventions | `## Semantic Label Patterns` |
 | Focus order implementation | `## Focus & Navigation Order` |
 | Accessible form implementation | `## Forms` |
 | Reduce motion / display accommodations | `## Display Accommodations` |
@@ -86,9 +83,9 @@ Use this table to find what you need in the loaded Flutter reference:
 | Robust | Name, role, value exposed to assistive tech | A |
 | Policy | Financial data readable by screen readers | Required |
 | Policy | Transaction confirmations announced via live regions | Required |
-| Policy | Session timeout: 2-min warning with extend option | Required |
+| Policy | Before revealing secure data, inform user that hide/show will expose sensitive information | Required |
 
-For the full WCAG 2.1 AA checklist mapped to banking UI, read `skills/frontend/accessibility/flutter/REFERENCE.md` § WCAG Checklist.
+For the full WCAG 2.1 AA checklist, read `skills/frontend/accessibility/flutter/REFERENCE.md` § WCAG Checklist.
 
 ## Severity Classification
 
@@ -101,20 +98,20 @@ For the full WCAG 2.1 AA checklist mapped to banking UI, read `skills/frontend/a
 ## Workflow
 
 1. **Collect context** — ask Q1 and Q2 from Step 0. Stop until all answered.
-2. **Load references** — read the Flutter reference + core reference.
+2. **Load reference** — read the Flutter REFERENCE.md.
 3. **Identify scope** — list UI components to audit based on the user's scope answer.
-4. **Audit semantics** — check against `## Hard Rules` in the Flutter reference.
+4. **Audit semantics** — check against `## Hard Rules` in the reference.
 5. **Audit keyboard/navigation** — all interactive paths, no traps, logical order.
 6. **Audit visual** — contrast, text scaling, color independence.
-7. **Audit assistive tech** — screen reader announcements, live regions, roles (use Flutter reference mappings).
-8. **Remediate** — fix by severity (CRITICAL first), using code patterns from Flutter reference.
-9. **Test** — write tests using patterns from `## Testing` in the Flutter reference.
-10. **Report** — generate audit report using `## Audit Report Format` from the Flutter reference.
+7. **Audit assistive tech** — screen reader announcements, live regions, roles.
+8. **Remediate** — fix by severity (CRITICAL first), using code patterns from reference.
+9. **Test** — write tests using patterns from `## Testing` in the reference.
+10. **Report** — generate audit report using `## Audit Report Format` from the reference.
 
 ## Checklist
 
 - [ ] Step 0 complete — target platforms and scope collected
-- [ ] Flutter reference and core reference loaded
+- [ ] Flutter reference loaded
 - [ ] All interactive elements keyboard-accessible (no GestureDetector)
 - [ ] No keyboard/focus traps
 - [ ] Visible focus indicator on every interactive element
@@ -125,7 +122,7 @@ For the full WCAG 2.1 AA checklist mapped to banking UI, read `skills/frontend/a
 - [ ] Both orientations supported
 - [ ] Form inputs have labels and error messages
 - [ ] Dynamic content announced via live regions
-- [ ] Session timeout: 2-min warning with extend option
+- [ ] Secure data hide/show informs user before revealing sensitive information
 - [ ] Reduced motion preference respected (MediaQuery.disableAnimations)
 - [ ] Touch targets meet platform minimum (48dp Android / 44pt iOS)
 - [ ] Tests written using Flutter widget test patterns

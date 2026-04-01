@@ -16,17 +16,14 @@ Before any work, you MUST ask this question. Do not guess. Do not infer. Do not 
 **Q1: Audit scope**
 > "What should I audit: **full app**, **specific page/route**, **specific component**, or **PR/diff changes only**?"
 
-### After Answer — Load References
+### After Answer — Load Reference
 
-Read these files before proceeding:
-- `skills/frontend/accessibility/react/REFERENCE.md` — React/Next.js-specific patterns and code examples
-- `skills/frontend/accessibility/react/REFERENCE.md` — Core WCAG checklist and banking requirements
+Read this file before proceeding:
+- `skills/frontend/accessibility/react/REFERENCE.md` — React/Next.js-specific patterns, code examples, and core WCAG checklist
 
-**Do NOT proceed to Step 1 until references are loaded.**
+**Do NOT proceed to Step 1 until reference is loaded.**
 
 ## Section Navigation Guide
-
-Use this table to find what you need in the loaded React reference:
 
 | Need | Section heading to read |
 |------|-------------------------|
@@ -35,7 +32,7 @@ Use this table to find what you need in the loaded React reference:
 | Common mistakes to flag | `## Anti-Patterns` |
 | ARIA live regions and patterns | `## ARIA Patterns` |
 | Minimum click target sizes | `## Touch Targets` |
-| Labeling conventions for banking UI | `## Semantic Label Patterns` |
+| Labeling conventions | `## Semantic Label Patterns` |
 | Focus and keyboard navigation | `## Keyboard Navigation` |
 | Accessible form implementation | `## Accessible Forms` |
 | Reduce motion handling | `## Reduce Motion` |
@@ -89,9 +86,9 @@ Use this table to find what you need in the loaded React reference:
 | Robust | Name, role, value exposed to assistive tech | A |
 | Policy | Financial data readable by screen readers | Required |
 | Policy | Transaction confirmations announced via live regions | Required |
-| Policy | Session timeout: 2-min warning with extend option | Required |
+| Policy | Before revealing secure data, inform user that hide/show will expose sensitive information | Required |
 
-For the full WCAG 2.1 AA checklist mapped to banking UI, read `skills/frontend/accessibility/react/REFERENCE.md` § WCAG Checklist.
+For the full WCAG 2.1 AA checklist, read `skills/frontend/accessibility/react/REFERENCE.md` § WCAG Checklist.
 
 ## Severity Classification
 
@@ -104,20 +101,20 @@ For the full WCAG 2.1 AA checklist mapped to banking UI, read `skills/frontend/a
 ## Workflow
 
 1. **Collect context** — ask Q1 from Step 0. Stop until answered.
-2. **Load references** — read the React reference + core reference.
+2. **Load reference** — read the React REFERENCE.md.
 3. **Identify scope** — list UI components to audit based on the user's scope answer.
-4. **Audit semantics** — check against `## Hard Rules` in the React reference.
+4. **Audit semantics** — check against `## Hard Rules` in the reference.
 5. **Audit keyboard/navigation** — all interactive paths, no traps, logical order, skip link, focus management.
 6. **Audit visual** — contrast, text scaling, reflow at 320px, color independence.
-7. **Audit assistive tech** — screen reader announcements, live regions, ARIA roles (use React reference mappings).
-8. **Remediate** — fix by severity (CRITICAL first), using code patterns from React reference.
-9. **Test** — write tests using patterns from `## Testing` in the React reference.
-10. **Report** — generate audit report using `## Audit Report Format` from the React reference.
+7. **Audit assistive tech** — screen reader announcements, live regions, ARIA roles.
+8. **Remediate** — fix by severity (CRITICAL first), using code patterns from reference.
+9. **Test** — write tests using patterns from `## Testing` in the reference.
+10. **Report** — generate audit report using `## Audit Report Format` from the reference.
 
 ## Checklist
 
 - [ ] Step 0 complete — audit scope collected
-- [ ] React reference and core reference loaded
+- [ ] React reference loaded
 - [ ] All interactive elements use native HTML elements or have full ARIA
 - [ ] No keyboard/focus traps
 - [ ] Visible focus indicator on every interactive element (`focus-visible`)
@@ -131,7 +128,7 @@ For the full WCAG 2.1 AA checklist mapped to banking UI, read `skills/frontend/a
 - [ ] Form inputs have labels and error messages
 - [ ] Dynamic content announced via live regions
 - [ ] Modals have focus trap and close on Escape
-- [ ] Session timeout: 2-min warning with extend option
+- [ ] Secure data hide/show informs user before revealing sensitive information
 - [ ] Reduced motion preference respected (`prefers-reduced-motion`)
 - [ ] Click targets meet 44x44px minimum
 - [ ] Tests written (jest-axe, Testing Library, Playwright)

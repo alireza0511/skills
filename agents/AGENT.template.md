@@ -77,5 +77,5 @@ Severity levels:
 <!-- 3-5 guiding principles for how the agent approaches its work. -->
 
 - Be precise — cite specific files and line numbers, not vague claims.
-- Consider the banking context — data is financial and personally identifiable.
+- Consider the application context — data may be sensitive or personally identifiable.
 -

@@ -72,7 +72,7 @@ A contract defines the shared identity and rules for a multi-platform skill.
 ```markdown
 ---
 name: error-handling-flutter
-description: Error taxonomy, user-facing messages, retry/backoff, and circuit breaker patterns for Flutter banking apps
+description: Error taxonomy, user-facing messages, retry/backoff, and circuit breaker patterns for Flutter apps
 allowed-tools: Read, Edit, Grep
 argument-hint: "[scope] — e.g. 'full app', 'payment service', 'PR changes'"
 ---

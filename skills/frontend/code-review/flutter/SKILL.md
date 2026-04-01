@@ -1,6 +1,6 @@
 ---
 name: code-review-flutter
-description: "PR conventions, conventional commits, branch strategy, and Flutter-specific review checklist for banking services"
+description: "PR conventions, conventional commits, branch strategy, and Flutter-specific review checklist for services"
 allowed-tools:
   - Read
   - Grep

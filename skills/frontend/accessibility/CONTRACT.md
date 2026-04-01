@@ -4,13 +4,13 @@
 
 - **Name:** accessibility
 - **One-liner:** Audit and fix accessibility issues against WCAG 2.1 AA and accessibility policy
-- **Platforms:** flutter, react, ios, android
-- **Target type:** both
+- **framework:** flutter, react
+- **Target type:** ios, android, web browser
 
 ## What the LLM Must Ask the User First
 
 - Is this a mobile app, a web app, or both?
-- Which framework/platform: Flutter, React/Next.js, iOS native (Swift), or Android native (Kotlin)?
+- Which framework/platform: Flutter, React/Next.js?
 - What is the audit scope: full app, specific screen/page, specific component, or PR/diff changes only?
 
 ## Hard Rules
@@ -35,7 +35,7 @@
 - Name, role, value exposed to assistive tech
 - Policy: financial data must be screen-reader readable
 - Policy: transaction confirmations announced via live regions
-- Policy: session timeout 2-min warning with extend option
+- Policy: before announcing secure data, inform the user that the hide/show button will reveal sensitive information
 
 ## Platform-Specific Notes
 
@@ -55,21 +55,6 @@
 - Landmark regions: header, nav, main, footer
 - Content must reflow at 320px without horizontal scroll
 - prefers-reduced-motion CSS media query for animations
-
-### iOS
-- Use SwiftUI accessibility modifiers (.accessibilityLabel, .accessibilityHint, etc.)
-- Support Dynamic Type — test at AX5 (largest accessibility size)
-- Use UIAccessibility.post for programmatic announcements
-- @ScaledMetric for custom sizes that respect Dynamic Type
-- Touch targets minimum 44pt (Apple HIG)
-
-### Android
-- Use Jetpack Compose semantics {} block for custom views
-- Always declare role on Modifier.clickable (Role.Button, etc.)
-- Use LiveRegionMode.Assertive for errors, Polite for status updates
-- contentDescription on all meaningful images
-- Touch targets minimum 48dp (Material Design)
-- Respect system animator duration scale for reduce motion
 
 ## Workflow
 
@@ -97,7 +82,6 @@
 - [ ] Orientation/reflow requirements met
 - [ ] Form inputs have labels and error messages
 - [ ] Dynamic content announced via live regions
-- [ ] Session timeout 2-min warning with extend
 - [ ] Reduced motion preference respected
 - [ ] Touch/click targets meet platform minimum
 - [ ] Tests written
@@ -113,7 +97,7 @@ Each platform REFERENCE.md includes the core WCAG checklist, ARIA patterns, colo
 - Anti-patterns to flag during audit
 - Assistive tech mapping (screen reader gestures, announcements, property-to-behavior mapping)
 - Touch/click target implementation patterns
-- Semantic label/description patterns for banking UI (buttons, inputs, amounts, radio groups)
+- Semantic label/description patterns for UI (buttons, inputs, amounts, radio groups)
 - Focus and navigation order implementation
 - Form accessibility patterns
 - Reduce motion / display accommodation implementation

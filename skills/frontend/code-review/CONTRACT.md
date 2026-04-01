@@ -3,7 +3,7 @@
 ## Identity
 
 - **Name:** code-review
-- **One-liner:** PR conventions, conventional commits, branch strategy, review checklist for banking services
+- **One-liner:** PR conventions, conventional commits, branch strategy, review checklist for services
 - **Platforms:** flutter, react
 - **Target type:** both
 

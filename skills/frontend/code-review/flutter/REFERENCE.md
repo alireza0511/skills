@@ -211,7 +211,7 @@ ListView.builder(itemCount: items.length, itemBuilder: (_, i) => ItemWidget(item
 | Network | HTTP used instead of HTTPS |
 | Logging | PII or sensitive data logged in production |
 | Obfuscation | Release build not using `--obfuscate` flag |
-| Certificate pinning | Missing for banking API endpoints |
+| Certificate pinning | Missing for API endpoints |
 
 ---
 
