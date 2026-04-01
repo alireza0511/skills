@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Validate YAML frontmatter in all SKILL.md files under core/ and stacks/.
+# Validate YAML frontmatter in all SKILL.md files.
+# Searches core/<skill>/<platform>/SKILL.md, core/<skill>/SKILL.md, and stacks/<lang>/<skill>/SKILL.md.
 # Required fields: name, description, allowed-tools
-# The 'name' field must match the parent directory name (kebab-case).
 
 EXIT_CODE=0
 FILES_CHECKED=0
@@ -11,8 +11,6 @@ ERRORS=0
 
 validate_file() {
   local file="$1"
-  local dir_name
-  dir_name=$(basename "$(dirname "$file")")
   local has_error=false
 
   # Check that the file starts with ---
@@ -49,14 +47,6 @@ validate_file() {
     fi
   done
 
-  # Verify name matches directory name
-  local name_value
-  name_value=$(echo "$frontmatter" | grep -E '^name\s*:' | head -1 | sed 's/^name\s*:\s*//' | sed 's/^["'\'']//' | sed 's/["'\'']\s*$//' | xargs)
-  if [ -n "$name_value" ] && [ "$name_value" != "$dir_name" ]; then
-    echo "ERROR: $file — frontmatter name '$name_value' does not match directory name '$dir_name'"
-    has_error=true
-  fi
-
   if [ "$has_error" = true ]; then
     return 1
   fi
@@ -67,28 +57,15 @@ validate_file() {
 echo "=== Frontmatter Validation ==="
 echo ""
 
-for dir in core stacks; do
-  if [ ! -d "$dir" ]; then
-    continue
+# Find all SKILL.md files under core/ and stacks/
+while IFS= read -r -d '' skill_file; do
+  FILES_CHECKED=$((FILES_CHECKED + 1))
+
+  if ! validate_file "$skill_file"; then
+    ERRORS=$((ERRORS + 1))
+    EXIT_CODE=1
   fi
-
-  for skill_dir in "$dir"/*/; do
-    [ -d "$skill_dir" ] || continue
-    skill_file="${skill_dir}SKILL.md"
-
-    if [ ! -f "$skill_file" ]; then
-      echo "WARNING: No SKILL.md found in $skill_dir"
-      continue
-    fi
-
-    FILES_CHECKED=$((FILES_CHECKED + 1))
-
-    if ! validate_file "$skill_file"; then
-      ERRORS=$((ERRORS + 1))
-      EXIT_CODE=1
-    fi
-  done
-done
+done < <(find core stacks -name 'SKILL.md' -print0 2>/dev/null || true)
 
 echo ""
 echo "=== Summary ==="

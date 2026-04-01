@@ -7,6 +7,10 @@ set -euo pipefail
 #   2. At least one heading containing "rule" (e.g., "Hard Rules", "Rules")
 #   3. A heading containing "workflow" or "process"
 #   4. A heading containing "checklist" OR markdown checkboxes (- [ ])
+#
+# Also checks:
+#   - Every platform SKILL.md has a sibling REFERENCE.md
+#   - Multi-platform skill roots (core/<name>/) have a CONTRACT.md
 
 EXIT_CODE=0
 FILES_CHECKED=0
@@ -46,36 +50,60 @@ check_file() {
     file_errors=$((file_errors + 1))
   fi
 
+  # 5. Check for sibling REFERENCE.md
+  local dir
+  dir=$(dirname "$file")
+  if [ ! -f "${dir}/REFERENCE.md" ]; then
+    echo "  MISSING: REFERENCE.md in $(dirname "$file")"
+    file_errors=$((file_errors + 1))
+  fi
+
   return "$file_errors"
 }
 
 echo "=== Structure Check ==="
 echo ""
 
-for dir in core stacks agents; do
-  if [ ! -d "$dir" ]; then
-    continue
+# Find all SKILL.md files under core/ and stacks/
+while IFS= read -r -d '' skill_file; do
+  FILES_CHECKED=$((FILES_CHECKED + 1))
+  echo "Checking: $skill_file"
+
+  if ! check_file "$skill_file"; then
+    ERRORS=$((ERRORS + 1))
+    EXIT_CODE=1
+    echo "::error file=${skill_file}::Missing required structural sections"
+  else
+    echo "  OK"
   fi
+done < <(find core stacks -name 'SKILL.md' -print0 2>/dev/null || true)
 
-  for skill_dir in "$dir"/*/; do
-    [ -d "$skill_dir" ] || continue
-    skill_file="${skill_dir}SKILL.md"
+# Check that multi-platform core skills have CONTRACT.md
+echo ""
+echo "--- CONTRACT.md Check ---"
+for skill_root in core/*/; do
+  [ -d "$skill_root" ] || continue
 
-    if [ ! -f "$skill_file" ]; then
-      continue
-    fi
-
-    FILES_CHECKED=$((FILES_CHECKED + 1))
-    echo "Checking: $skill_file"
-
-    if ! check_file "$skill_file"; then
-      ERRORS=$((ERRORS + 1))
-      EXIT_CODE=1
-      echo "::error file=${skill_file}::Missing required structural sections"
-    else
-      echo "  OK"
+  # Skip skill-development (single-level skill, no platforms)
+  # A multi-platform skill has platform subdirs with SKILL.md
+  has_platform_dirs=false
+  for subdir in "$skill_root"*/; do
+    [ -d "$subdir" ] || continue
+    if [ -f "${subdir}SKILL.md" ]; then
+      has_platform_dirs=true
+      break
     fi
   done
+
+  if [ "$has_platform_dirs" = true ]; then
+    if [ ! -f "${skill_root}CONTRACT.md" ]; then
+      echo "MISSING: ${skill_root}CONTRACT.md (multi-platform skill requires CONTRACT.md)"
+      ERRORS=$((ERRORS + 1))
+      EXIT_CODE=1
+    else
+      echo "OK: ${skill_root}CONTRACT.md"
+    fi
+  fi
 done
 
 echo ""

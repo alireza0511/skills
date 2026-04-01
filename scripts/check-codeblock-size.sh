@@ -4,7 +4,7 @@ set -euo pipefail
 # Check that no code block in SKILL.md exceeds size limits.
 # - Warn if a code block > 10 lines (soft limit, SKILL.md only)
 # - Fail if a code block > 20 lines (hard limit, SKILL.md only)
-# - reference.md is unlimited and not checked.
+# - REFERENCE.md is unlimited and not checked.
 
 EXIT_CODE=0
 WARNINGS=0
@@ -60,29 +60,17 @@ check_file() {
 echo "=== Code Block Size Check ==="
 echo ""
 
-for dir in core stacks agents; do
-  if [ ! -d "$dir" ]; then
-    continue
+# Find all SKILL.md files under core/ and stacks/
+while IFS= read -r -d '' skill_file; do
+  FILES_CHECKED=$((FILES_CHECKED + 1))
+  echo "Checking: $skill_file"
+
+  if ! check_file "$skill_file"; then
+    EXIT_CODE=1
+  else
+    echo "  OK"
   fi
-
-  for skill_dir in "$dir"/*/; do
-    [ -d "$skill_dir" ] || continue
-    skill_file="${skill_dir}SKILL.md"
-
-    if [ ! -f "$skill_file" ]; then
-      continue
-    fi
-
-    FILES_CHECKED=$((FILES_CHECKED + 1))
-    echo "Checking: $skill_file"
-
-    if ! check_file "$skill_file"; then
-      EXIT_CODE=1
-    else
-      echo "  OK"
-    fi
-  done
-done
+done < <(find core stacks -name 'SKILL.md' -print0 2>/dev/null || true)
 
 echo ""
 echo "=== Summary ==="
