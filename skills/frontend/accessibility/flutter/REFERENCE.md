@@ -4,7 +4,7 @@ Flutter-specific accessibility patterns for mobile applications. See `skills/fro
 
 ## Core Principle
 
-**Avoid wrapping widgets with custom `Semantics` unless absolutely necessary.** Flutter's built-in widgets already provide correct semantic roles, states, and announcements. Wrapping them overrides framework behavior, risks duplicates, and adds maintenance burden.
+**Avoid wrapping widgets with custom `Semantics` unless absolutely necessary.** Flutter's built-in widgets already provide correct semantic roles, states, and announcements.
 
 Use custom `Semantics` only for:
 - Custom-painted widgets (`CustomPaint`, `Canvas`)
@@ -31,32 +31,13 @@ Semantics(liveRegion: true, child: Text(errorMessage))
 
 Flag these during audit — wrapping built-in widgets with redundant `Semantics`:
 
-```dart
-// WRONG — ElevatedButton already announces as "Button"
-Semantics(
-  button: true,
-  label: 'Submit',
-  child: ElevatedButton(
-    onPressed: _submit,
-    child: Text('Submit'),
-  ),
-)
-
-// WRONG — TextField already announces as "Text field"
-Semantics(
-  textField: true,
-  label: 'Email',
-  child: TextField(
-    decoration: InputDecoration(labelText: 'Email'),
-  ),
-)
-
-// WRONG — Radio already manages checked/unchecked state
-Semantics(
-  checked: isSelected,
-  child: Radio<String>(value: 'a', groupValue: selected, onChanged: _onChanged),
-)
-```
+| Widget | Why wrapping is wrong | Built-in behavior |
+|--------|----------------------|-------------------|
+| `ElevatedButton` | Already announces as "Button" | Provides role, label from child `Text` |
+| `TextField` + `InputDecoration.labelText` | Already announces as "Text field" | Reads label, hint, error automatically |
+| `Radio` / `Checkbox` / `Switch` | Already manages checked/unchecked state | Announces state changes |
+| `Slider` | Already announces value and range | Reads current value, min, max |
+| `DropdownButton` | Already announces selected value | Reads selection state |
 
 ## Hard Rules
 
@@ -141,13 +122,6 @@ ConstrainedBox(constraints: BoxConstraints(minHeight: 48), child: Text('Grows'))
 | Navigate radio group | Arrow keys |
 | Dismiss dialog/sheet | Escape |
 
-**Flutter requirements:**
-- All interactive widgets must receive focus via Tab
-- Focus indicator must be visible (never hide it)
-- Focus must not get trapped — Escape must dismiss overlays
-- Focus order must match visual layout
-- Never use `GestureDetector` for interactive elements
-
 ### Voice Control
 
 | Feature | Android (Voice Access) | iOS (Voice Control) |
@@ -156,18 +130,11 @@ ConstrainedBox(constraints: BoxConstraints(minHeight: 48), child: Text('Grows'))
 | Show numbers | "Show numbers" | "Show numbers" |
 | Type text | "Type [text]" | "Type [text]" |
 
-**Flutter requirements:**
-- Every interactive element must have a visible label or accessible name
-- Labels must be unique within the visible screen
-- Icon-only buttons must have `semanticLabel` or `tooltip`
-
 ### Switch Access / Switch Control
 
-**Flutter requirements:**
 - All interactive widgets must appear in scan order
 - Related elements grouped via `MergeSemantics`
 - No time-limited interactions
-- Keep focusable element count reasonable
 
 ```dart
 // GOOD — MergeSemantics reduces scan targets
@@ -183,10 +150,7 @@ MergeSemantics(
 
 ## Touch Targets
 
-Minimum sizes:
-- Android: 48x48 dp
-- iOS: 44x44 pt
-- Use 48 to satisfy both
+Minimum sizes: 48x48 dp (Android), 44x44 pt (iOS). Use 48 to satisfy both.
 
 ```dart
 ConstrainedBox(
@@ -244,21 +208,17 @@ Semantics(sortKey: OrdinalSortKey(0), child: Text('Form Title'))
 // Reduce motion
 final reduceMotion = MediaQuery.of(context).disableAnimations;
 final duration = reduceMotion ? Duration.zero : const Duration(milliseconds: 150);
-
-// High contrast
-final highContrast = MediaQuery.of(context).highContrast;
 ```
 
 ## Forms
 
-Accessible form patterns for common workflows. Use Flutter's built-in form widgets — they provide correct semantic roles and validation announcements automatically.
+Use Flutter's built-in form widgets — they provide correct semantic roles and validation announcements automatically.
 
 ```dart
-// Accessible transfer form
+// Accessible form
 Form(
   child: Column(
     children: [
-      // Labeled input with error
       TextFormField(
         decoration: InputDecoration(
           labelText: 'Amount',
@@ -277,22 +237,22 @@ Form(
           child: Text('${errors.length} errors found'),
         ),
 
-      // Submit button
-      ElevatedButton(
-        onPressed: _review,
-        child: Text('Review Transfer'),
-      ),
+      ElevatedButton(onPressed: _review, child: Text('Review Transfer')),
     ],
   ),
 )
 ```
 
-**Key rules for forms:**
-- Use `TextFormField` with `InputDecoration.labelText` — never rely on placeholder text alone
-- Use `errorText` for inline validation errors — screen readers announce these automatically
-- Use `Semantics(liveRegion: true)` for error summaries so they are announced immediately
-- Group related fields in a `Column` to maintain natural focus order
-- Provide `keyboardType` to show the appropriate keyboard for the input type
+| Pattern | Requirement |
+|---------|-------------|
+| Label association | Use `InputDecoration.labelText` — never placeholder-only |
+| Required fields | Mark programmatically + visual indicator |
+| Error display | `errorText` for inline errors + `Semantics(liveRegion: true)` for summary |
+| Field grouping | Group related fields in `Column` for natural focus order |
+| Input type | Provide `keyboardType` for the appropriate keyboard |
+| Submit confirmation | Review page before final submission for financial transactions |
+
+Error message format: `"[Field name] — [what went wrong] — [how to fix]"`
 
 ## Testing
 
@@ -308,6 +268,16 @@ Form(
 | Voice: Activate by label | "Tap Submit" | "Tap Submit" |
 | Large text | Settings > Font size > max | Settings > Dynamic Type > max |
 | Reduce motion | Settings > Remove animations | Settings > Reduce Motion |
+
+### Common A11y Defects
+
+| Defect | Fix |
+|--------|-----|
+| Balance not in live region | Add `Semantics(liveRegion: true)` |
+| Table missing headers | Add proper header cells with scope |
+| Modal doesn't trap focus | Implement focus trap |
+| Secure data revealed without warning | Inform user before exposing sensitive data |
+| PDF statements inaccessible | Generate tagged PDFs or provide HTML alternative |
 
 ## Audit Report Format
 
@@ -329,13 +299,6 @@ Form(
 **Fix:** Add `tooltip: 'Delete item'`
 **WCAG:** 1.1.1 Non-text Content (A)
 
-#### [MAJOR] GestureDetector not keyboard-accessible
-**File:** lib/src/widgets/card.dart:L78
-**Issue:** Card uses GestureDetector — not focusable via Tab
-**Affects:** Keyboard users, Switch Access
-**Fix:** Replace with InkWell
-**WCAG:** 2.1.1 Keyboard (A)
-
 ### Passed Checks
 - [✓] Touch targets meet 48dp minimum
 - [✓] Focus indicators visible
@@ -344,201 +307,27 @@ Form(
 
 ---
 
-# Core Accessibility Reference
-
 ## WCAG Checklist
 
-Full WCAG 2.1 AA success criteria most relevant to applications.
+Key WCAG 2.1 AA success criteria for Flutter apps. For the full spec, see [WCAG 2.1](https://www.w3.org/TR/WCAG21/).
 
-### Perceivable
-
-| Criterion | ID | Requirement | Context |
-|---|---|---|---|
-| Non-text Content | 1.1.1 | Text alternative for all non-text content | Charts, logos, status icons, CAPTCHA alternatives |
-| Captions | 1.2.2 | Captions for prerecorded audio/video | Tutorial videos, customer support recordings |
-| Info and Relationships | 1.3.1 | Structure conveyed programmatically | Account tables, transaction lists, form groups |
-| Meaningful Sequence | 1.3.2 | Reading order matches visual order | Multi-column layouts, dashboard widgets |
-| Sensory Characteristics | 1.3.3 | Instructions not based solely on shape, size, location, sound | "Click the green button" is not sufficient |
-| Orientation | 1.3.4 | Content not restricted to single orientation | App must work in both orientations |
-| Input Purpose | 1.3.5 | Autocomplete attributes on common fields | Name, email, phone, address, card number |
-| Use of Color | 1.4.1 | Color not sole means of conveying info | Transaction status, account health indicators |
-| Contrast (Minimum) | 1.4.3 | 4.5:1 for normal text, 3:1 for large text | All text including balances, rates, disclaimers |
-| Resize Text | 1.4.4 | Text resizable to 200% without loss | All pages, especially transaction tables |
-| Reflow | 1.4.10 | No horizontal scroll at 320px width | Mobile-first layouts |
-| Non-text Contrast | 1.4.11 | 3:1 for UI components and graphical objects | Buttons, input borders, chart elements |
-| Text Spacing | 1.4.12 | Content readable with increased spacing | Line height 1.5x, letter spacing 0.12em |
-
-### Operable
-
-| Criterion | ID | Requirement | Context |
-|---|---|---|---|
-| Keyboard | 2.1.1 | All functionality via keyboard | Transfers, bill pay, account navigation |
-| No Keyboard Trap | 2.1.2 | Focus can always be moved away | Modal dialogs, dropdown menus, date pickers |
-| Timing Adjustable | 2.2.1 | Users can extend time limits | Time-limited actions must warn before expiry |
-| Pause, Stop, Hide | 2.2.2 | User can control moving content | Auto-rotating promotions, live rate tickers |
-| Skip Links | 2.4.1 | Bypass repeated content | "Skip to main content" on every page |
-| Page Titled | 2.4.2 | Descriptive page titles | "Transfer Funds — MyBank" not just "MyBank" |
-| Focus Order | 2.4.3 | Logical tab order | Form fields, action buttons, navigation |
-| Link Purpose | 2.4.4 | Link text describes destination | "View January statement" not "Click here" |
-| Multiple Ways | 2.4.5 | More than one way to find pages | Nav + search + sitemap |
-| Headings and Labels | 2.4.6 | Descriptive headings and labels | "Recent Transactions" not "Section 3" |
-| Focus Visible | 2.4.7 | Visible focus indicator | Minimum 2px outline, sufficient contrast |
-
-### Understandable
-
-| Criterion | ID | Requirement | Context |
-|---|---|---|---|
-| Language of Page | 3.1.1 | Default language declared | lang attribute on root element |
-| Language of Parts | 3.1.2 | Language changes marked | Multilingual terms and conditions |
-| On Focus | 3.2.1 | No context change on focus | Don't submit form on field focus |
-| On Input | 3.2.2 | No unexpected context change on input | Warn before navigating away from form |
-| Consistent Navigation | 3.2.3 | Nav order consistent across pages | Same header/sidebar on all authenticated pages |
-| Error Identification | 3.3.1 | Errors identified and described | "Amount must be between $0.01 and $50,000" |
-| Labels or Instructions | 3.3.2 | Labels for all inputs | Every form field has a visible label |
-| Error Suggestion | 3.3.3 | Suggest corrections when possible | "Did you mean IBAN format: XX00..." |
-| Error Prevention | 3.3.4 | Review step for financial/legal submissions | Confirmation page before transfers |
-
-### Robust
-
-| Criterion | ID | Requirement | Context |
-|---|---|---|---|
-| Parsing | 4.1.1 | Valid markup | No duplicate IDs, proper nesting |
-| Name, Role, Value | 4.1.2 | All components expose name, role, value | Custom widgets must declare semantics |
-| Status Messages | 4.1.3 | Status messages announced without focus change | Transaction confirmations, error alerts |
-
----
-
-## Semantics Patterns
-
-### Common UI Patterns
-
-| Component | Flutter Semantics | Implementation |
+| ID | Criterion | Requirement |
 |---|---|---|
-| Live data (balance, status) | `Semantics(liveRegion: true)` | Wrap in live region for auto-announcement |
-| Status message | `Semantics(liveRegion: true)` | Use with `Text` for success/error messages |
-| Confirmation dialog | `AlertDialog` | Built-in semantics — no custom Semantics needed |
-| Selector / dropdown | `DropdownButton` | Built-in semantics — announces selected value |
-| Data list | `ListView` + `MergeSemantics` | Group related content per row |
-| Navigation | `NavigationBar` / `Drawer` | Built-in semantics — use `semanticLabel` on icons |
-| Loading indicator | `CircularProgressIndicator` | Add `Semantics(label: 'Loading')` wrapper |
-| Modal / bottom sheet | `showModalBottomSheet` | Built-in focus trapping |
-| Tab view | `TabBar` + `TabBarView` | Built-in semantics — announces tab selection |
-| Error summary | `Semantics(liveRegion: true)` | Announce error count immediately |
-
-### Live Region Usage
-
-| Scenario | Implementation | Rationale |
-|---|---|---|
-| Data update | `Semantics(liveRegion: true, child: Text(value))` | Auto-announces changes to screen reader |
-| Success message | `Semantics(liveRegion: true, child: Text('Done'))` | User confirmation |
-| Error message | `Semantics(liveRegion: true, child: Text(error))` | User must know immediately |
-| Search results | `Semantics(liveRegion: true, child: Text('$count results'))` | Supplementary info |
-
----
-
-## Color Contrast
-
-### Minimum Ratios (WCAG 2.1 AA)
-
-| Element Type | Minimum Ratio | Example |
-|---|---|---|
-| Normal text (< 18pt / < 14pt bold) | 4.5:1 | Body copy, labels, table cells |
-| Large text (>= 18pt / >= 14pt bold) | 3:1 | Headings, large buttons |
-| UI components (borders, icons) | 3:1 | Input borders, toggle switches, chart lines |
-| Focus indicators | 3:1 | Outline against adjacent colors |
-| Disabled elements | No requirement | But must be distinguishable as disabled |
-
-### Additional Considerations
-
-- **Financial status colors**: Always pair with icon and text label (green checkmark + "Approved", red X + "Declined").
-- **Charts and graphs**: Use patterns/textures in addition to color differentiation. Provide data table alternative.
-- **Branded elements**: Brand colors must still meet contrast ratios. Request accessible palette from design team if needed.
-- **Dark mode**: Maintain all contrast ratios in dark theme. Test independently.
-
----
-
-## Form Accessibility
-
-### Required Form Patterns
-
-| Pattern | Implementation |
-|---|---|
-| Label association | Programmatic label linked to input — never placeholder-only |
-| Required fields | Mark as required programmatically + visual indicator (not just asterisk without explanation) |
-| Error display | Inline error below field + error summary at top; link field to error description |
-| Field grouping | Group related fields (address, payment method) with a group label |
-| Input format hint | Associate format example ("DD/MM/YYYY") with the field |
-| Autocomplete | Use autocomplete attributes: `name`, `email`, `tel`, `cc-number`, `cc-exp` |
-| Submit confirmation | Review page before final submission for financial transactions |
-
-### Error Message Structure
-
-```
-error_summary:
-    role: "alert"
-    heading: "Please fix N errors before continuing"
-    items:
-        - link to field + error description
-
-inline_error:
-    linked to field via describedby
-    invalid state: "true"
-    message: "[Field name] — [what went wrong] — [how to fix]"
-```
-
-### Accessible Transfer Form Structure
-
-```
-form label="Fund Transfer"
-  fieldset label="Transfer Details"
-
-    label "From Account" → select (required, no autocomplete)
-
-    label "To Account or IBAN" → input (required)
-      hint: "Enter account number or IBAN"
-      error: "Account number must be 10-34 characters"
-
-    label "Amount" → input (required, decimal, autocomplete=transaction-amount)
-
-  button "Review Transfer"
-```
-
----
-
-## Testing Methods
-
-### Automated Testing
-
-| Tool Category | Purpose | When to Run |
-|---|---|---|
-| Linter plugins | Catch a11y issues in markup/templates at dev time | Pre-commit, IDE |
-| CI a11y scanner | Automated WCAG rule checking | Every PR, merge to main |
-| Contrast checker | Validate color combinations | Design review, PR |
-
-### Manual Testing Protocol
-
-| Step | Method | Frequency |
-|---|---|---|
-| Keyboard navigation | Tab through all flows without mouse | Every PR with UI changes |
-| Screen reader | Test with primary SR for target platform | Every feature, pre-release |
-| Zoom to 200% | Verify no content loss or overlap | Every PR with layout changes |
-| Reduced motion | Enable prefers-reduced-motion, verify | Every PR with animations |
-| High contrast mode | Verify readability in OS high contrast | Pre-release |
-| Mobile VoiceOver/TalkBack | Test on real devices | Pre-release |
-
-### Screen Reader Priority by Platform
-
-| Platform | Primary SR | Secondary SR |
-|---|---|---|
-| iOS | VoiceOver | — |
-| Android | TalkBack | — |
-
-### Common A11y Defects
-
-| Defect | Impact | Fix |
-|---|---|---|
-| Balance not in live region | Screen reader users miss updates | Add live region with polite priority |
-| Transaction table missing headers | Data is meaningless without context | Add proper header cells with scope |
-| OTP modal doesn't trap focus | User tabs behind modal | Implement focus trap |
-| Secure data revealed without warning | User unaware sensitive info will be shown | Inform user before hide/show exposes sensitive data |
-| PDF statements inaccessible | Cannot read with assistive tech | Generate tagged PDFs or provide HTML alternative |
+| 1.1.1 | Non-text Content | Text alternative for all non-text content |
+| 1.3.1 | Info and Relationships | Structure conveyed programmatically |
+| 1.3.2 | Meaningful Sequence | Reading order matches visual order |
+| 1.3.4 | Orientation | Content not restricted to single orientation |
+| 1.4.1 | Use of Color | Color not sole means of conveying info |
+| 1.4.3 | Contrast (Minimum) | 4.5:1 normal text, 3:1 large text |
+| 1.4.4 | Resize Text | Text resizable to 200% without loss |
+| 1.4.11 | Non-text Contrast | 3:1 for UI components and graphics |
+| 2.1.1 | Keyboard | All functionality via keyboard |
+| 2.1.2 | No Keyboard Trap | Focus can always be moved away |
+| 2.4.3 | Focus Order | Logical tab order |
+| 2.4.7 | Focus Visible | Visible focus indicator |
+| 3.2.1 | On Focus | No context change on focus |
+| 3.3.1 | Error Identification | Errors identified and described |
+| 3.3.2 | Labels or Instructions | Labels for all inputs |
+| 3.3.4 | Error Prevention | Review step for financial/legal submissions |
+| 4.1.2 | Name, Role, Value | All components expose name, role, value |
+| 4.1.3 | Status Messages | Status messages announced without focus change |
