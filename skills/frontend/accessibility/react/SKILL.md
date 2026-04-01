@@ -37,7 +37,7 @@ Read this file before proceeding:
 | Accessible form implementation | `## Accessible Forms` |
 | Reduce motion handling | `## Reduce Motion` |
 | Next.js-specific patterns | `## Next.js Specific` |
-| Automated + manual test patterns | `## Testing` |
+| Manual testing checklist | `## Testing` |
 | Report template | `## Audit Report Format` |
 
 ## Target Compliance
@@ -108,7 +108,7 @@ For the full WCAG 2.1 AA checklist, read `skills/frontend/accessibility/react/RE
 6. **Audit visual** — contrast, text scaling, reflow at 320px, color independence.
 7. **Audit assistive tech** — screen reader announcements, live regions, ARIA roles.
 8. **Remediate** — fix by severity (CRITICAL first), using code patterns from reference.
-9. **Test** — write tests using patterns from `## Testing` in the reference.
+9. **Manual test** — follow manual testing checklist from `## Testing` in the reference.
 10. **Report** — generate audit report using `## Audit Report Format` from the reference.
 
 ## Checklist
@@ -131,5 +131,5 @@ For the full WCAG 2.1 AA checklist, read `skills/frontend/accessibility/react/RE
 - [ ] Secure data hide/show informs user before revealing sensitive information
 - [ ] Reduced motion preference respected (`prefers-reduced-motion`)
 - [ ] Click targets meet 44x44px minimum
-- [ ] Tests written (jest-axe, Testing Library, Playwright)
+- [ ] Manual testing checklist completed
 - [ ] Audit report generated using React report template

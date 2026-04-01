@@ -39,7 +39,7 @@ Read this file before proceeding:
 | Focus order implementation | `## Focus & Navigation Order` |
 | Accessible form implementation | `## Forms` |
 | Reduce motion / display accommodations | `## Display Accommodations` |
-| Automated + manual test patterns | `## Testing` |
+| Manual testing checklist | `## Testing` |
 | Report template | `## Audit Report Format` |
 
 ## Target Compliance
@@ -105,7 +105,7 @@ For the full WCAG 2.1 AA checklist, read `skills/frontend/accessibility/flutter/
 6. **Audit visual** — contrast, text scaling, color independence.
 7. **Audit assistive tech** — screen reader announcements, live regions, roles.
 8. **Remediate** — fix by severity (CRITICAL first), using code patterns from reference.
-9. **Test** — write tests using patterns from `## Testing` in the reference.
+9. **Manual test** — follow manual testing checklist from `## Testing` in the reference.
 10. **Report** — generate audit report using `## Audit Report Format` from the reference.
 
 ## Checklist
@@ -125,5 +125,5 @@ For the full WCAG 2.1 AA checklist, read `skills/frontend/accessibility/flutter/
 - [ ] Secure data hide/show informs user before revealing sensitive information
 - [ ] Reduced motion preference respected (MediaQuery.disableAnimations)
 - [ ] Touch targets meet platform minimum (48dp Android / 44pt iOS)
-- [ ] Tests written using Flutter widget test patterns
+- [ ] Manual testing checklist completed
 - [ ] Audit report generated using Flutter report template

@@ -408,64 +408,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 ## Testing
 
-### Automated: jest-axe
-
-```tsx
-import { render } from '@testing-library/react';
-import { axe, toHaveNoViolations } from 'jest-axe';
-
-expect.extend(toHaveNoViolations);
-
-test('transfer form has no a11y violations', async () => {
-  const { container } = render(<TransferForm />);
-  const results = await axe(container);
-  expect(results).toHaveNoViolations();
-});
-```
-
-### Automated: Testing Library Queries
-
-```tsx
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-
-test('submit button is keyboard accessible', async () => {
-  render(<TransferForm />);
-  const button = screen.getByRole('button', { name: /submit/i });
-
-  // Verify it's focusable
-  await userEvent.tab();
-  expect(button).toHaveFocus();
-
-  // Verify keyboard activation
-  await userEvent.keyboard('{Enter}');
-  // assert submission occurred
-});
-
-test('error messages are announced', async () => {
-  render(<TransferForm />);
-  await userEvent.click(screen.getByRole('button', { name: /submit/i }));
-
-  // Verify alert role
-  expect(screen.getByRole('alert')).toBeInTheDocument();
-});
-```
-
-### Playwright E2E Accessibility
-
-```typescript
-import { test, expect } from '@playwright/test';
-import AxeBuilder from '@axe-core/playwright';
-
-test('transfer page passes a11y audit', async ({ page }) => {
-  await page.goto('/transfer');
-  const results = await new AxeBuilder({ page })
-    .withTags(['wcag2a', 'wcag2aa'])
-    .analyze();
-  expect(results.violations).toEqual([]);
-});
-```
-
 ### Manual Testing Checklist
 
 | Test | Method |

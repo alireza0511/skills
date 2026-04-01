@@ -296,40 +296,6 @@ Form(
 
 ## Testing
 
-### Automated Widget Tests
-
-```dart
-testWidgets('widget meets accessibility guidelines', (tester) async {
-  final handle = tester.ensureSemantics();
-  await tester.pumpWidget(MaterialApp(home: Scaffold(body: MyWidget())));
-
-  // Check semantic labels
-  expect(find.bySemanticsLabel('Expected label'), findsOneWidget);
-
-  // Check touch target size
-  final size = tester.getSize(find.byType(MyWidget));
-  expect(size.width, greaterThanOrEqualTo(48));
-  expect(size.height, greaterThanOrEqualTo(48));
-
-  // Built-in guidelines
-  await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
-  await expectLater(tester, meetsGuideline(iOSTapTargetGuideline));
-  await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
-  await expectLater(tester, meetsGuideline(textContrastGuideline));
-
-  handle.dispose();
-});
-```
-
-### Built-in Guidelines
-
-| Guideline | Checks |
-|-----------|--------|
-| `androidTapTargetGuideline` | Touch targets >= 48x48 dp |
-| `iOSTapTargetGuideline` | Touch targets >= 44x44 pt |
-| `labeledTapTargetGuideline` | All tappable elements have semantic labels |
-| `textContrastGuideline` | Text contrast meets WCAG 2 AA (4.5:1) |
-
 ### Manual Testing
 
 | Test | Android (TalkBack) | iOS (VoiceOver) |
