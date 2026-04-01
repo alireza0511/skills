@@ -25,9 +25,22 @@ Ownership is enforced via the `CODEOWNERS` file at the repository root.
 4. **CI must pass** -- all checks described below must be green before merge.
 5. **Merge** using squash-merge to keep the history clean.
 
-## SKILL.md Authoring Guidelines
+## Skill Authoring Guidelines
 
-Every skill directory must contain a `SKILL.md` file with valid YAML frontmatter. For comprehensive authoring instructions, templates, and examples, refer to the **`core/skill-development/`** meta-skill.
+Skills follow a platform-specific structure. Multi-platform core skills have a `CONTRACT.md` at the skill root, with platform subdirectories each containing a `SKILL.md` and `REFERENCE.md`.
+
+```
+core/<name>/
+├── CONTRACT.md
+├── flutter/
+│   ├── SKILL.md
+│   └── REFERENCE.md
+└── react/
+    ├── SKILL.md
+    └── REFERENCE.md
+```
+
+For comprehensive authoring instructions, templates, and examples, refer to the **`core/skill-development/`** meta-skill.
 
 ### Frontmatter Requirements
 
@@ -56,11 +69,11 @@ Keep skills concise. The following thresholds apply to `SKILL.md` files:
 
 CI will warn on files exceeding 300 lines and block on files exceeding 500 lines without an approved exception.
 
-### reference.md
+### REFERENCE.md
 
-Every skill **must** include a `reference.md` file alongside its `SKILL.md`. This file contains the detailed reference material that the skill draws upon.
+Every `SKILL.md` **must** have a sibling `REFERENCE.md` in the same directory. This file contains detailed reference material that the skill draws upon. Core reference content (shared standards, checklists) is merged into each platform's `REFERENCE.md` — there is no shared reference file at the skill root.
 
-- Use **section notation** (`\u00a7`) to organize content (e.g., `\u00a7 SQL Injection Prevention`, `\u00a7 Input Validation`).
+- Use **section notation** (`§`) to organize content (e.g., `§ SQL Injection Prevention`, `§ Input Validation`).
 - Keep reference material factual, linkable, and version-stamped where applicable.
 
 ## CI Checks
@@ -68,8 +81,9 @@ Every skill **must** include a `reference.md` file alongside its `SKILL.md`. Thi
 The following checks must pass on every PR:
 
 1. **Frontmatter validation** -- `SKILL.md` files must have `name`, `description`, and `allowed-tools` in their YAML frontmatter.
-2. **reference.md presence** -- every skill directory containing a `SKILL.md` must also contain a `reference.md`.
-3. **Line budget enforcement** -- `SKILL.md` files exceeding 500 lines cause a failure; files exceeding 300 lines cause a warning.
-4. **JSON lint** -- `manifest.json` must be valid JSON.
-5. **Shell lint** -- `install.sh` must pass `shellcheck`.
-6. **CODEOWNERS validity** -- the `CODEOWNERS` file must reference valid teams.
+2. **REFERENCE.md presence** -- every directory containing a `SKILL.md` must also contain a `REFERENCE.md`.
+3. **CONTRACT.md presence** -- every multi-platform core skill must have a `CONTRACT.md` at the skill root.
+4. **Line budget enforcement** -- `SKILL.md` files exceeding 500 lines cause a failure; files exceeding 300 lines cause a warning.
+5. **JSON lint** -- `manifest.json` must be valid JSON.
+6. **Shell lint** -- `install.sh` must pass `shellcheck`.
+7. **CODEOWNERS validity** -- the `CODEOWNERS` file must reference valid teams.

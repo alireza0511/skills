@@ -75,38 +75,33 @@ echo ""
 WARNINGS=0
 ERRORS=0
 
-validate_skill_dir() {
-  local skill_dir="$1"
-  local skill_name
-  skill_name="$(basename "$skill_dir")"
-
-  # Check SKILL.md exists
-  if [[ ! -f "$skill_dir/SKILL.md" ]]; then
-    return
-  fi
+validate_skill_file() {
+  local skill_file="$1"
+  local skill_dir
+  skill_dir="$(dirname "$skill_file")"
 
   # Validate SKILL.md frontmatter has required fields
   local frontmatter
-  frontmatter=$(awk '/^---$/{if(++c==2) exit} c' "$skill_dir/SKILL.md")
+  frontmatter=$(awk '/^---$/{if(++c==2) exit} c' "$skill_file")
 
   for field in name description allowed-tools; do
     if ! echo "$frontmatter" | grep -q "^${field}:"; then
-      echo "  ERROR: $skill_name/SKILL.md is missing required frontmatter field: $field"
+      echo "  ERROR: $skill_file is missing required frontmatter field: $field"
       ERRORS=$((ERRORS + 1))
     fi
   done
 
-  # Check reference.md exists
-  if [[ ! -f "$skill_dir/reference.md" ]]; then
-    echo "  ERROR: $skill_name/ is missing reference.md"
+  # Check REFERENCE.md exists alongside SKILL.md
+  if [[ ! -f "$skill_dir/REFERENCE.md" ]]; then
+    echo "  ERROR: $skill_dir/ is missing REFERENCE.md"
     ERRORS=$((ERRORS + 1))
   fi
 
   # Warn if SKILL.md exceeds 300 lines
   local line_count
-  line_count=$(wc -l < "$skill_dir/SKILL.md" | tr -d ' ')
+  line_count=$(wc -l < "$skill_file" | tr -d ' ')
   if [[ "$line_count" -gt 300 ]]; then
-    echo "  WARNING: $skill_name/SKILL.md is $line_count lines (exceeds 300-line threshold)"
+    echo "  WARNING: $skill_file is $line_count lines (exceeds 300-line threshold)"
     WARNINGS=$((WARNINGS + 1))
   fi
 }
@@ -121,10 +116,10 @@ if [[ -d "$SCRIPT_DIR/core" ]]; then
   cp -R "$SCRIPT_DIR/core/"* "$SKILLS_DEST/" 2>/dev/null || true
   echo "  Copied core/* -> $SKILLS_DEST/"
 
-  # Validate each core skill
-  for dir in "$SCRIPT_DIR/core"/*/; do
-    [[ -d "$dir" ]] && validate_skill_dir "$dir"
-  done
+  # Validate each core skill (SKILL.md files may be in platform subdirs)
+  while IFS= read -r -d '' skill_file; do
+    validate_skill_file "$skill_file"
+  done < <(find "$SCRIPT_DIR/core" -name 'SKILL.md' -print0 2>/dev/null || true)
 else
   echo "  WARNING: core/ directory not found, skipping."
   WARNINGS=$((WARNINGS + 1))
@@ -150,9 +145,9 @@ if [[ -n "$STACKS" ]]; then
       INSTALLED_STACKS+=("$stack")
 
       # Validate each stack skill
-      for dir in "$stack_dir"/*/; do
-        [[ -d "$dir" ]] && validate_skill_dir "$dir"
-      done
+      while IFS= read -r -d '' skill_file; do
+        validate_skill_file "$skill_file"
+      done < <(find "$stack_dir" -name 'SKILL.md' -print0 2>/dev/null || true)
     else
       echo "  WARNING: stacks/$stack/ not found, skipping."
       WARNINGS=$((WARNINGS + 1))

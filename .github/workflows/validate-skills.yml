@@ -43,24 +43,42 @@ jobs:
         run: ./scripts/check-structure.sh
 
   reference-check:
-    name: Reference File Check
+    name: Reference & Contract File Check
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Verify reference.md exists in every skill directory
+      - name: Verify REFERENCE.md exists alongside every SKILL.md
         run: |
           EXIT_CODE=0
-          for dir in core/*/  stacks/*/  agents/*/; do
-            [ -d "$dir" ] || continue
-            if [ ! -f "${dir}reference.md" ]; then
-              echo "::error::Missing reference.md in ${dir}"
+          while IFS= read -r -d '' skill_file; do
+            dir=$(dirname "$skill_file")
+            if [ ! -f "${dir}/REFERENCE.md" ]; then
+              echo "::error::Missing REFERENCE.md in ${dir}/"
+              EXIT_CODE=1
+            fi
+          done < <(find core stacks -name 'SKILL.md' -print0 2>/dev/null || true)
+
+          # Check CONTRACT.md for multi-platform core skills
+          for skill_root in core/*/; do
+            [ -d "$skill_root" ] || continue
+            has_platform=false
+            for subdir in "$skill_root"*/; do
+              [ -d "$subdir" ] || continue
+              if [ -f "${subdir}SKILL.md" ]; then
+                has_platform=true
+                break
+              fi
+            done
+            if [ "$has_platform" = true ] && [ ! -f "${skill_root}CONTRACT.md" ]; then
+              echo "::error::Missing CONTRACT.md in ${skill_root}"
               EXIT_CODE=1
             fi
           done
+
           if [ "$EXIT_CODE" -eq 0 ]; then
-            echo "All skill directories contain reference.md"
+            echo "All skill directories contain REFERENCE.md; multi-platform skills have CONTRACT.md"
           fi
           exit "$EXIT_CODE"
 
